@@ -1,18 +1,24 @@
-import type { LucideIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
+import type { LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface StatCardProps {
-  title: string
-  value: string | number
+  title: string;
+  value: string | number;
   change?: {
-    value: number
-    type: "increase" | "decrease"
-  }
-  icon: LucideIcon
-  className?: string
+    value: number;
+    type: "increase" | "decrease";
+  };
+  icon: LucideIcon;
+  className?: string;
 }
 
-export function StatCard({ title, value, change, icon: Icon, className }: StatCardProps) {
+export function StatCard({
+  title,
+  value,
+  change,
+  icon: Icon,
+  className,
+}: StatCardProps) {
   return (
     <div
       className={cn(
@@ -26,11 +32,18 @@ export function StatCard({ title, value, change, icon: Icon, className }: StatCa
           <p className="text-3xl font-bold text-foreground mt-2">{value}</p>
           {change && (
             <div className="flex items-center mt-2">
-              <span className={cn("text-sm font-medium", change.type === "increase" ? "text-success" : "text-error")}>
+              <span
+                className={cn(
+                  "text-sm font-medium",
+                  change.type === "increase" ? "text-success" : "text-error",
+                )}
+              >
                 {change.type === "increase" ? "+" : "-"}
                 {Math.abs(change.value)}%
               </span>
-              <span className="text-xs text-muted-foreground ml-1">vs mes anterior</span>
+              <span className="text-xs text-muted-foreground ml-1">
+                vs mes anterior
+              </span>
             </div>
           )}
         </div>
@@ -39,5 +52,5 @@ export function StatCard({ title, value, change, icon: Icon, className }: StatCa
         </div>
       </div>
     </div>
-  )
+  );
 }

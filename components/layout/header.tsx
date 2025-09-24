@@ -1,19 +1,21 @@
-"use client"
+"use client";
 
-import { Bell, Search, Settings } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Bell, Search, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface HeaderProps {
-  title: string
-  subtitle?: string
+  title: string;
+  subtitle?: string;
 }
 
 export function Header({ title, subtitle }: HeaderProps) {
   return (
     <header className="flex items-center justify-between p-6 border-b border-border bg-card/50 backdrop-blur-sm">
       <div>
-        <h1 className="text-2xl font-bold text-foreground text-balance">{title}</h1>
+        <h1 className="text-2xl font-bold text-foreground text-balance">
+          {title}
+        </h1>
         {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
       </div>
 
@@ -21,7 +23,10 @@ export function Header({ title, subtitle }: HeaderProps) {
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Buscar huéspedes, reservas..." className="pl-10 w-80 bg-muted border-border" />
+          <Input
+            placeholder="Buscar huéspedes, reservas..."
+            className="pl-10 w-80 bg-muted border-border"
+          />
         </div>
 
         {/* Notifications */}
@@ -38,5 +43,5 @@ export function Header({ title, subtitle }: HeaderProps) {
         </Button>
       </div>
     </header>
-  )
+  );
 }

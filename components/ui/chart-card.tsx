@@ -1,19 +1,24 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Card } from "@/components/ui/card"
-import { cn } from "@/lib/utils"
-import type { LucideIcon } from "lucide-react"
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
 
 interface ChartCardProps {
-  title: string
-  children: React.ReactNode
-  icon?: LucideIcon
-  className?: string
+  title: string;
+  children: React.ReactNode;
+  icon?: LucideIcon;
+  className?: string;
 }
 
-export function ChartCard({ title, children, icon: Icon, className }: ChartCardProps) {
+export function ChartCard({
+  title,
+  children,
+  icon: Icon,
+  className,
+}: ChartCardProps) {
   return (
     <Card className={cn("p-6", className)}>
       <div className="flex items-center justify-between mb-4">
@@ -22,5 +27,5 @@ export function ChartCard({ title, children, icon: Icon, className }: ChartCardP
       </div>
       {children}
     </Card>
-  )
+  );
 }
