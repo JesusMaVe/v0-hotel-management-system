@@ -31,49 +31,73 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Configuración</h1>
-          <p className="text-muted-foreground">Gestiona la configuración del sistema y preferencias del hotel</p>
+    <div className="space-y-8 p-4 md:p-6">
+      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+        <div className="space-y-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">Configuración</h1>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+            Gestiona la configuración del sistema y preferencias del hotel
+          </p>
         </div>
-        <Button onClick={saveSettings} className="bg-primary hover:bg-primary/90">
+        <Button onClick={saveSettings} className="bg-primary hover:bg-primary/90 w-full md:w-auto">
           <Save className="h-4 w-4 mr-2" />
           Guardar Cambios
         </Button>
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="hotel">Hotel</TabsTrigger>
-          <TabsTrigger value="users">Usuarios</TabsTrigger>
-          <TabsTrigger value="notifications">Notificaciones</TabsTrigger>
-          <TabsTrigger value="security">Seguridad</TabsTrigger>
-          <TabsTrigger value="integrations">Integraciones</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 min-w-max md:min-w-0">
+            <TabsTrigger value="general" className="text-xs md:text-sm px-2 md:px-4">
+              General
+            </TabsTrigger>
+            <TabsTrigger value="hotel" className="text-xs md:text-sm px-2 md:px-4">
+              Hotel
+            </TabsTrigger>
+            <TabsTrigger value="users" className="text-xs md:text-sm px-2 md:px-4">
+              Usuarios
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="text-xs md:text-sm px-2 md:px-4">
+              Notificaciones
+            </TabsTrigger>
+            <TabsTrigger value="security" className="text-xs md:text-sm px-2 md:px-4">
+              Seguridad
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="text-xs md:text-sm px-2 md:px-4">
+              Integraciones
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* General Settings */}
         <TabsContent value="general" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Settings className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Configuración General</span>
               </CardTitle>
-              <CardDescription>Configuración básica del sistema</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">Configuración básica del sistema</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="hotel-name">Nombre del Hotel</Label>
-                  <Input id="hotel-name" value={hotelName} onChange={(e) => setHotelName(e.target.value)} />
+            <CardContent className="space-y-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="hotel-name" className="text-sm font-medium">
+                    Nombre del Hotel
+                  </Label>
+                  <Input
+                    id="hotel-name"
+                    value={hotelName}
+                    onChange={(e) => setHotelName(e.target.value)}
+                    className="h-10"
+                  />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="currency">Moneda</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="currency" className="text-sm font-medium">
+                    Moneda
+                  </Label>
                   <Select value={currency} onValueChange={setCurrency}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -83,10 +107,12 @@ export default function SettingsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="timezone">Zona Horaria</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="timezone" className="text-sm font-medium">
+                    Zona Horaria
+                  </Label>
                   <Select value={timezone} onValueChange={setTimezone}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -96,10 +122,12 @@ export default function SettingsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="language">Idioma</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="language" className="text-sm font-medium">
+                    Idioma
+                  </Label>
                   <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger>
+                    <SelectTrigger className="h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -117,50 +145,62 @@ export default function SettingsPage() {
         {/* Hotel Settings */}
         <TabsContent value="hotel" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Hotel className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Hotel className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Configuración del Hotel</span>
               </CardTitle>
-              <CardDescription>Información y configuración específica del hotel</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
+                Información y configuración específica del hotel
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="total-rooms">Total de Habitaciones</Label>
-                  <Input id="total-rooms" type="number" defaultValue="120" />
+            <CardContent className="space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="total-rooms" className="text-sm font-medium">
+                    Total de Habitaciones
+                  </Label>
+                  <Input id="total-rooms" type="number" defaultValue="120" className="h-10" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="check-in">Hora de Check-in</Label>
-                  <Input id="check-in" type="time" defaultValue="15:00" />
+                <div className="space-y-3">
+                  <Label htmlFor="check-in" className="text-sm font-medium">
+                    Hora de Check-in
+                  </Label>
+                  <Input id="check-in" type="time" defaultValue="15:00" className="h-10" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="check-out">Hora de Check-out</Label>
-                  <Input id="check-out" type="time" defaultValue="12:00" />
+                <div className="space-y-3">
+                  <Label htmlFor="check-out" className="text-sm font-medium">
+                    Hora de Check-out
+                  </Label>
+                  <Input id="check-out" type="time" defaultValue="12:00" className="h-10" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tax-rate">Tasa de Impuestos (%)</Label>
-                  <Input id="tax-rate" type="number" step="0.01" defaultValue="16.00" />
+                <div className="space-y-3">
+                  <Label htmlFor="tax-rate" className="text-sm font-medium">
+                    Tasa de Impuestos (%)
+                  </Label>
+                  <Input id="tax-rate" type="number" step="0.01" defaultValue="16.00" className="h-10" />
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <h4 className="font-medium text-foreground">Tipos de Habitación</h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-6">
+                <h4 className="font-semibold text-foreground text-base">Tipos de Habitación</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {[
                     { type: "Estándar", count: 60, price: 2500 },
                     { type: "Superior", count: 40, price: 3200 },
                     { type: "Suite", count: 20, price: 4800 },
                   ].map((room, index) => (
-                    <Card key={index} className="p-4">
-                      <div className="space-y-2">
+                    <Card key={index} className="p-5">
+                      <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h5 className="font-medium text-foreground">{room.type}</h5>
-                          <Badge variant="outline">{room.count} hab.</Badge>
+                          <h5 className="font-medium text-foreground text-sm">{room.type}</h5>
+                          <Badge variant="outline" className="text-xs">
+                            {room.count} hab.
+                          </Badge>
                         </div>
-                        <div className="space-y-1">
-                          <Label className="text-xs">Precio Base</Label>
-                          <Input type="number" defaultValue={room.price} className="h-8" />
+                        <div className="space-y-2">
+                          <Label className="text-xs font-medium text-muted-foreground">Precio Base</Label>
+                          <Input type="number" defaultValue={room.price} className="h-9 text-sm" />
                         </div>
                       </div>
                     </Card>
@@ -174,46 +214,55 @@ export default function SettingsPage() {
         {/* User Management */}
         <TabsContent value="users" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Users className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Users className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Gestión de Usuarios</span>
               </CardTitle>
-              <CardDescription>Administra usuarios y permisos del sistema</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
+                Administra usuarios y permisos del sistema
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium text-foreground">Usuarios Activos</h4>
-                  <Button size="sm">Agregar Usuario</Button>
-                </div>
+            <CardContent className="space-y-6">
+              <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+                <h4 className="font-semibold text-foreground text-base">Usuarios Activos</h4>
+                <Button size="sm" className="w-full md:w-auto">
+                  Agregar Usuario
+                </Button>
+              </div>
 
-                <div className="space-y-3">
-                  {[
-                    { name: "Ana García", role: "Administrador", email: "ana@villamagna.com", status: "Activo" },
-                    { name: "Carlos López", role: "Recepcionista", email: "carlos@villamagna.com", status: "Activo" },
-                    {
-                      name: "María Rodríguez",
-                      role: "Housekeeping",
-                      email: "maria@villamagna.com",
-                      status: "Inactivo",
-                    },
-                  ].map((user, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                      <div className="space-y-1">
-                        <p className="font-medium text-foreground">{user.name}</p>
-                        <p className="text-sm text-muted-foreground">{user.email}</p>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <Badge variant={user.status === "Activo" ? "default" : "secondary"}>{user.status}</Badge>
-                        <Badge variant="outline">{user.role}</Badge>
-                        <Button variant="ghost" size="sm">
-                          Editar
-                        </Button>
-                      </div>
+              <div className="space-y-4">
+                {[
+                  { name: "Ana García", role: "Administrador", email: "ana@villamagna.com", status: "Activo" },
+                  { name: "Carlos López", role: "Recepcionista", email: "carlos@villamagna.com", status: "Activo" },
+                  {
+                    name: "María Rodríguez",
+                    role: "Housekeeping",
+                    email: "maria@villamagna.com",
+                    status: "Inactivo",
+                  },
+                ].map((user, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 p-4 border border-border rounded-lg"
+                  >
+                    <div className="space-y-2">
+                      <p className="font-medium text-foreground text-sm">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex flex-col space-y-2 md:flex-row md:items-center md:space-y-0 md:space-x-3">
+                      <Badge variant={user.status === "Activo" ? "default" : "secondary"} className="text-xs">
+                        {user.status}
+                      </Badge>
+                      <Badge variant="outline" className="text-xs">
+                        {user.role}
+                      </Badge>
+                      <Button variant="ghost" size="sm" className="text-xs">
+                        Editar
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -222,41 +271,49 @@ export default function SettingsPage() {
         {/* Notifications */}
         <TabsContent value="notifications" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Bell className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Bell className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Configuración de Notificaciones</span>
               </CardTitle>
-              <CardDescription>Gestiona cómo y cuándo recibir notificaciones</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
+                Gestiona cómo y cuándo recibir notificaciones
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <h4 className="font-medium text-foreground">Canales de Notificación</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">Email</p>
-                      <p className="text-sm text-muted-foreground">Recibir notificaciones por correo electrónico</p>
+            <CardContent className="space-y-8">
+              <div className="space-y-6">
+                <h4 className="font-semibold text-foreground text-base">Canales de Notificación</h4>
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">Email</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Recibir notificaciones por correo electrónico
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.email}
                       onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, email: checked }))}
                     />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">Push</p>
-                      <p className="text-sm text-muted-foreground">Notificaciones push en el navegador</p>
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">Push</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Notificaciones push en el navegador
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.push}
                       onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, push: checked }))}
                     />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">SMS</p>
-                      <p className="text-sm text-muted-foreground">Mensajes de texto para alertas críticas</p>
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">SMS</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Mensajes de texto para alertas críticas
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.sms}
@@ -266,33 +323,39 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <h4 className="font-medium text-foreground">Tipos de Notificación</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">Reservaciones</p>
-                      <p className="text-sm text-muted-foreground">Nuevas reservas, cancelaciones y modificaciones</p>
+              <div className="space-y-6">
+                <h4 className="font-semibold text-foreground text-base">Tipos de Notificación</h4>
+                <div className="space-y-5">
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">Reservaciones</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Nuevas reservas, cancelaciones y modificaciones
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.reservations}
                       onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, reservations: checked }))}
                     />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">Mantenimiento</p>
-                      <p className="text-sm text-muted-foreground">Reportes de mantenimiento y limpieza</p>
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">Mantenimiento</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Reportes de mantenimiento y limpieza
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.maintenance}
                       onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, maintenance: checked }))}
                     />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-foreground">Ingresos</p>
-                      <p className="text-sm text-muted-foreground">Alertas de ingresos y métricas financieras</p>
+                  <div className="flex items-center justify-between py-2">
+                    <div className="space-y-1 flex-1 pr-4">
+                      <p className="font-medium text-foreground text-sm">Ingresos</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Alertas de ingresos y métricas financieras
+                      </p>
                     </div>
                     <Switch
                       checked={notifications.revenue}
@@ -308,48 +371,56 @@ export default function SettingsPage() {
         {/* Security */}
         <TabsContent value="security" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Shield className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Shield className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Configuración de Seguridad</span>
               </CardTitle>
-              <CardDescription>Configuración de seguridad y acceso al sistema</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
+                Configuración de seguridad y acceso al sistema
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-foreground">Autenticación de Dos Factores</p>
-                    <p className="text-sm text-muted-foreground">Requiere verificación adicional para iniciar sesión</p>
+            <CardContent className="space-y-8">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between py-2">
+                  <div className="space-y-1 flex-1 pr-4">
+                    <p className="font-medium text-foreground text-sm">Autenticación de Dos Factores</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Requiere verificación adicional para iniciar sesión
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-foreground">Sesiones Múltiples</p>
-                    <p className="text-sm text-muted-foreground">Permitir múltiples sesiones activas por usuario</p>
+                <div className="flex items-center justify-between py-2">
+                  <div className="space-y-1 flex-1 pr-4">
+                    <p className="font-medium text-foreground text-sm">Sesiones Múltiples</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Permitir múltiples sesiones activas por usuario
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-foreground">Bloqueo Automático</p>
-                    <p className="text-sm text-muted-foreground">Bloquear sesión después de inactividad</p>
+                <div className="flex items-center justify-between py-2">
+                  <div className="space-y-1 flex-1 pr-4">
+                    <p className="font-medium text-foreground text-sm">Bloqueo Automático</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Bloquear sesión después de inactividad
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <h4 className="font-medium text-foreground">Políticas de Contraseña</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Longitud Mínima</Label>
-                    <Input type="number" defaultValue="8" />
+              <div className="space-y-6">
+                <h4 className="font-semibold text-foreground text-base">Políticas de Contraseña</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Longitud Mínima</Label>
+                    <Input type="number" defaultValue="8" className="h-10" />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Días para Expiración</Label>
-                    <Input type="number" defaultValue="90" />
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Días para Expiración</Label>
+                    <Input type="number" defaultValue="90" className="h-10" />
                   </div>
                 </div>
               </div>
@@ -360,12 +431,14 @@ export default function SettingsPage() {
         {/* Integrations */}
         <TabsContent value="integrations" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Database className="h-5 w-5" />
+            <CardHeader className="space-y-3">
+              <CardTitle className="flex items-center space-x-3 text-lg md:text-xl">
+                <Database className="h-5 w-5 md:h-6 md:w-6" />
                 <span>Integraciones</span>
               </CardTitle>
-              <CardDescription>Configuración de integraciones externas y APIs</CardDescription>
+              <CardDescription className="text-sm leading-relaxed">
+                Configuración de integraciones externas y APIs
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -376,16 +449,19 @@ export default function SettingsPage() {
                   { name: "Redes Sociales", status: "Conectado", description: "Facebook, Instagram" },
                   { name: "Sistema POS", status: "Desconectado", description: "Restaurante y Bar" },
                 ].map((integration, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div className="space-y-1">
-                      <p className="font-medium text-foreground">{integration.name}</p>
-                      <p className="text-sm text-muted-foreground">{integration.description}</p>
+                  <div
+                    key={index}
+                    className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 p-5 border border-border rounded-lg"
+                  >
+                    <div className="space-y-2">
+                      <p className="font-medium text-foreground text-sm">{integration.name}</p>
+                      <p className="text-xs text-muted-foreground">{integration.description}</p>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Badge variant={integration.status === "Conectado" ? "default" : "secondary"}>
+                    <div className="flex flex-col space-y-2 md:flex-row md:items-center md:space-y-0 md:space-x-3">
+                      <Badge variant={integration.status === "Conectado" ? "default" : "secondary"} className="text-xs">
                         {integration.status}
                       </Badge>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="text-xs bg-transparent">
                         {integration.status === "Conectado" ? "Configurar" : "Conectar"}
                       </Button>
                     </div>
