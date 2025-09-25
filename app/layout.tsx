@@ -2,7 +2,6 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/sidebar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,12 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} antialiased`}>
-      <body className="font-sans">
-        <div className="flex h-screen bg-background">
-          <Sidebar />
-          <main className="flex-1 overflow-auto pt-16 md:pt-0">{children}</main>
-        </div>
-      </body>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }

@@ -122,4 +122,24 @@
   body {
     @apply bg-background text-foreground;
   }
+  @apply bg-hotel-surface text-foreground font-sans antialiased;
+}
+
+/* Custom CSS utilities for the guest side app */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/10 border border-white/20;
+  }
+
+  .hotel-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--hotel-primary)) 0%,
+      hsl(var(--hotel-secondary)) 100%
+    );
+  }
 }
