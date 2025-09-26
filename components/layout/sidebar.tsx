@@ -16,6 +16,7 @@ import {
   Hotel,
   Menu,
   X,
+  ConciergeBell as Concierge,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -25,6 +26,7 @@ const navigation = [
   { name: "Reservaciones", href: "/reservations", icon: Calendar },
   { name: "Habitaciones", href: "/rooms", icon: Bed },
   { name: "Huéspedes", href: "/guests", icon: Users },
+  { name: "Servicios", href: "/services", icon: Concierge },
   { name: "Revenue", href: "/revenue", icon: TrendingUp },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Configuración", href: "/settings", icon: Settings },
