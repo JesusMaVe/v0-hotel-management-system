@@ -36,13 +36,10 @@ interface Recommendation {
 }
 
 const categories = [
-  { id: "all", label: "Todos", icon: Search },
   { id: "dining", label: "Gastronomía", icon: Utensils },
-  { id: "outdoor", label: "Aire libre", icon: Mountain },
-  { id: "wellness", label: "Bienestar", icon: Spa },
-  { id: "water", label: "Deportes acuáticos", icon: Waves },
-  { id: "culture", label: "Cultura", icon: Camera },
   { id: "nightlife", label: "Vida nocturna", icon: Music },
+  { id: "culture", label: "Cultura", icon: Camera },
+  { id: "wellness", label: "Bienestar", icon: Spa },
 ];
 
 const mockRecommendations: Recommendation[] = [
@@ -101,11 +98,11 @@ export function GuestRecommendations() {
   );
 
   return (
-    <div className="w-full md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl pt-[120px]">
-      <div className="grid w-full justify-items-center">
+    <div className="w-full md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
+      <div className="grid w-full gap-4">
         {/* Encabezado */}
-        <div className="pt-6 pb-3 text-center sm:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+        <div className="pt-6 pb-3">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             Recomendaciones Personalizadas
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed">
@@ -126,7 +123,7 @@ export function GuestRecommendations() {
         </div>
 
         {/* Filtros de categoría */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-2 max-w-[90vw] mt-2">
           {categories.map((category) => {
             const Icon = category.icon;
             const isActive = activeCategory === category.id;

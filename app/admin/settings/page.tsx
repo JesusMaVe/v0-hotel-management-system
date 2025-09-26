@@ -1,6 +1,5 @@
-"use client";
+"use client"
 
-<<<<<<< HEAD:app/settings/page.tsx
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -45,44 +44,6 @@ export default function SettingsPage() {
     { id: 3, name: "María Rodríguez", role: "Housekeeping", email: "maria@villamagna.com", status: "Inactivo" },
   ])
 
-=======
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import {
-  Settings,
-  Hotel,
-  Users,
-  Bell,
-  Shield,
-  Database,
-  Save,
-} from "lucide-react";
-
-export default function SettingsPage() {
-  const [hotelName, setHotelName] = useState("Villa Magna Family Resorts");
-  const [currency, setCurrency] = useState("MXN");
-  const [timezone, setTimezone] = useState("America/Mexico_City");
-  const [language, setLanguage] = useState("es");
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/settings/page.tsx
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -90,7 +51,7 @@ export default function SettingsPage() {
     reservations: true,
     maintenance: true,
     revenue: true,
-  });
+  })
 
   const [security, setSecurity] = useState({
     twoFactor: true,
@@ -114,7 +75,6 @@ export default function SettingsPage() {
   const [newUserRole, setNewUserRole] = useState("")
 
   const saveSettings = () => {
-<<<<<<< HEAD:app/settings/page.tsx
     toast({
       title: "Configuración Guardada",
       description: "Todos los cambios han sido guardados exitosamente",
@@ -189,11 +149,6 @@ export default function SettingsPage() {
       description: "El estado de la integración ha sido actualizado",
     })
   }
-=======
-    console.log("Guardando configuración...");
-    // TODO: Implement actual save functionality
-  };
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/settings/page.tsx
 
   return (
     <div className="space-y-8 p-4 md:p-6">
@@ -281,13 +236,9 @@ export default function SettingsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="America/Mexico_City">
-                        Ciudad de México
-                      </SelectItem>
+                      <SelectItem value="America/Mexico_City">Ciudad de México</SelectItem>
                       <SelectItem value="America/Cancun">Cancún</SelectItem>
-                      <SelectItem value="America/Los_Angeles">
-                        Los Ángeles
-                      </SelectItem>
+                      <SelectItem value="America/Los_Angeles">Los Ángeles</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -539,12 +490,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.email}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({
-                          ...prev,
-                          email: checked,
-                        }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, email: checked }))}
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
@@ -556,9 +502,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.push}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, push: checked }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, push: checked }))}
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
@@ -570,9 +514,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.sms}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, sms: checked }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, sms: checked }))}
                     />
                   </div>
                 </div>
@@ -590,12 +532,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.reservations}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({
-                          ...prev,
-                          reservations: checked,
-                        }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, reservations: checked }))}
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
@@ -607,12 +544,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.maintenance}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({
-                          ...prev,
-                          maintenance: checked,
-                        }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, maintenance: checked }))}
                     />
                   </div>
                   <div className="flex items-center justify-between py-2">
@@ -624,12 +556,7 @@ export default function SettingsPage() {
                     </div>
                     <Switch
                       checked={notifications.revenue}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({
-                          ...prev,
-                          revenue: checked,
-                        }))
-                      }
+                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, revenue: checked }))}
                     />
                   </div>
                 </div>
@@ -731,37 +658,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-<<<<<<< HEAD:app/settings/page.tsx
                 {integrations.map((integration) => (
-=======
-                {[
-                  {
-                    name: "Sistema de Pagos",
-                    status: "Conectado",
-                    description: "Stripe, PayPal",
-                  },
-                  {
-                    name: "Email Marketing",
-                    status: "Desconectado",
-                    description: "Mailchimp, SendGrid",
-                  },
-                  {
-                    name: "Análisis Web",
-                    status: "Conectado",
-                    description: "Google Analytics",
-                  },
-                  {
-                    name: "Redes Sociales",
-                    status: "Conectado",
-                    description: "Facebook, Instagram",
-                  },
-                  {
-                    name: "Sistema POS",
-                    status: "Desconectado",
-                    description: "Restaurante y Bar",
-                  },
-                ].map((integration, index) => (
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/settings/page.tsx
                   <div
                     key={integration.id}
                     className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 p-5 border border-border rounded-lg"
@@ -791,5 +688,5 @@ export default function SettingsPage() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

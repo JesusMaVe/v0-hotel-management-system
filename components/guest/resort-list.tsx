@@ -16,17 +16,10 @@ interface Resort {
 const resorts: Resort[] = [
   {
     id: "1",
-    name: "Hilton Grand Vacations at The Crane",
-    location: "Crane, St. Philip, Barbados",
-    image: "/images/hotel-puebla.jpg",
-    region: "Barbados",
-  },
-  {
-    id: "2",
-    name: "Carlsbad Seapointe Resort",
-    location: "Carlsbad, California",
+    name: "Villamagna",
+    location: "Aguascalientes, AGS.",
     image: "/images/hotel-puebla-2.jpg",
-    region: "California",
+    region: "México",
   },
 ];
 
@@ -46,8 +39,7 @@ export function ResortList() {
     <>
       {/* Header */}
       <div className="flex justify-between items-center p-4 pt-8">
-        <h1 className="text-2xl font-semibold">Browse Resorts</h1>
-        <button className=" font-medium">Filters</button>
+        <h1 className="text-2xl font-semibold">Hoteles disponibles</h1>
       </div>
 
       <div className="px-4 space-y-6 pb-20">
@@ -81,7 +73,7 @@ export function ResortList() {
                       </p>
                       <Link href={`/huesped/resort/${resort.id}`}>
                         <Button className="bg-gray-800 hover:bg-gray-900  px-4 py-2 text-sm">
-                          RESORT DETAILS
+                          ver detalles
                         </Button>
                       </Link>
                     </div>

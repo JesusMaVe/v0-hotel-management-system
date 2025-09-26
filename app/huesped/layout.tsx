@@ -13,7 +13,9 @@ export default function AdminLayout({
   return (
     <ActivityContainer>
       <LogotypeHeader />
-      {children}
+      <div className="pt-[120px]">
+        {children}
+      </div>
       <BottomNavigation />
     </ActivityContainer>
   );

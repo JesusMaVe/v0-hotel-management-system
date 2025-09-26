@@ -1,46 +1,18 @@
-"use client";
+"use client"
 
-<<<<<<< HEAD:app/reservations/page.tsx
 import { useState } from "react"
 import { Header } from "@/components/layout/header"
-import { ReservationCard } from "@/components/reservations/reservation-card"
-import { ReservationFilters } from "@/components/reservations/reservation-filters"
-import { QuickActions } from "@/components/reservations/quick-actions"
-import { NewReservationDialog } from "@/components/reservations/new-reservation-dialog"
-import { BulkCheckInDialog } from "@/components/reservations/bulk-checkin-dialog"
-import { BulkCheckOutDialog } from "@/components/reservations/bulk-checkout-dialog"
-import { CalendarViewDialog } from "@/components/reservations/calendar-view-dialog"
-import { EditReservationDialog } from "@/components/reservations/edit-reservation-dialog"
+import { ReservationCard } from "@/components/admin/reservations/reservation-card"
+import { ReservationFilters } from "@/components/admin/reservations/reservation-filters"
+import { QuickActions } from "@/components/admin/reservations/quick-actions"
+import { NewReservationDialog } from "@/components/admin/reservations/new-reservation-dialog"
+import { BulkCheckInDialog } from "@/components/admin/reservations/bulk-checkin-dialog"
+import { BulkCheckOutDialog } from "@/components/admin/reservations/bulk-checkout-dialog"
+import { CalendarViewDialog } from "@/components/admin/reservations/calendar-view-dialog"
+import { EditReservationDialog } from "@/components/admin/reservations/edit-reservation-dialog"
 import { useToast } from "@/hooks/use-toast"
 
 const mockReservations = [
-=======
-import { useState } from "react";
-import { Header } from "@/components/layout/header";
-import { ReservationCard } from "@/components/admin/reservations/reservation-card";
-import { ReservationFilters } from "@/components/admin/reservations/reservation-filters";
-import { QuickActions } from "@/components/admin/reservations/quick-actions";
-
-type ReservationStatus = "checked-in" | "checked-out" | "confirmed" | "pending";
-
-type Reservation = {
-  id: string;
-  guestName: string;
-  email: string;
-  phone: string;
-  checkIn: string;
-  checkOut: string;
-  roomType: string;
-  roomNumber?: string;
-  status: ReservationStatus;
-  totalAmount: number;
-  guests: number;
-  specialRequests?: string;
-};
-
-// Mock data
-const mockReservations: Reservation[] = [
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/reservations/page.tsx
   {
     id: "RES-001",
     guestName: "Ana María González Herrera",
@@ -50,7 +22,7 @@ const mockReservations: Reservation[] = [
     checkOut: "2025-02-13",
     roomType: "Suite Ejecutiva",
     roomNumber: "101",
-    status: "confirmed",
+    status: "confirmed" as const,
     totalAmount: 8500,
     guests: 2,
     specialRequests: "Vista al jardín, late check-out, dieta vegetariana",
@@ -64,7 +36,7 @@ const mockReservations: Reservation[] = [
     checkOut: "2025-02-12",
     roomType: "Standard",
     roomNumber: "205",
-    status: "checked-in",
+    status: "checked-in" as const,
     totalAmount: 4200,
     guests: 1,
   },
@@ -76,7 +48,7 @@ const mockReservations: Reservation[] = [
     checkIn: "2025-02-11",
     checkOut: "2025-02-14",
     roomType: "Suite",
-    status: "pending",
+    status: "pending" as const,
     totalAmount: 6300,
     guests: 3,
     specialRequests: "Cuna para bebé, habitación en planta baja",
@@ -90,7 +62,7 @@ const mockReservations: Reservation[] = [
     checkOut: "2025-02-10",
     roomType: "Ejecutiva",
     roomNumber: "312",
-    status: "checked-out",
+    status: "checked-out" as const,
     totalAmount: 5600,
     guests: 2,
   },
@@ -102,13 +74,11 @@ const mockReservations: Reservation[] = [
     checkIn: "2025-02-12",
     checkOut: "2025-02-15",
     roomType: "Presidencial",
-    status: "confirmed",
+    status: "confirmed" as const,
     totalAmount: 12000,
     guests: 4,
-    specialRequests:
-      "Decoración especial para aniversario, champagne de bienvenida",
+    specialRequests: "Decoración especial para aniversario, champagne de bienvenida",
   },
-<<<<<<< HEAD:app/reservations/page.tsx
   {
     id: "RES-006",
     guestName: "Pedro Ramírez Torres",
@@ -149,15 +119,10 @@ const mockReservations: Reservation[] = [
     guests: 1,
   },
 ]
-=======
-];
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/reservations/page.tsx
 
 export default function ReservationsPage() {
-  const [reservations, setReservations] =
-    useState<Reservation[]>(mockReservations);
-  const [filteredReservations, setFilteredReservations] =
-    useState<Reservation[]>(mockReservations);
+  const [reservations, setReservations] = useState(mockReservations)
+  const [filteredReservations, setFilteredReservations] = useState(mockReservations)
 
   const [newReservationOpen, setNewReservationOpen] = useState(false)
   const [bulkCheckInOpen, setBulkCheckInOpen] = useState(false)
@@ -168,59 +133,42 @@ export default function ReservationsPage() {
   const { toast } = useToast()
 
   const handleFiltersChange = (filters: any) => {
-    let filtered = reservations;
+    let filtered = reservations
 
     if (filters.searchTerm) {
       filtered = filtered.filter(
         (res) =>
-          res.guestName
-            .toLowerCase()
-            .includes(filters.searchTerm.toLowerCase()) ||
+          res.guestName.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
           res.email.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
           res.id.toLowerCase().includes(filters.searchTerm.toLowerCase()),
-      );
+      )
     }
 
     if (filters.status) {
-      filtered = filtered.filter((res) => res.status === filters.status);
+      filtered = filtered.filter((res) => res.status === filters.status)
     }
 
     if (filters.roomType) {
-      filtered = filtered.filter((res) =>
-        res.roomType.toLowerCase().includes(filters.roomType.toLowerCase()),
-      );
+      filtered = filtered.filter((res) => res.roomType.toLowerCase().includes(filters.roomType.toLowerCase()))
     }
 
-    setFilteredReservations(filtered);
-  };
+    setFilteredReservations(filtered)
+  }
 
   const handleCheckIn = (id: string) => {
-    setReservations((prev) =>
-      prev.map((res) =>
-        res.id === id ? { ...res, status: "checked-in" as const } : res,
-      ),
-    );
+    setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, status: "checked-in" as const } : res)))
     setFilteredReservations((prev) =>
-      prev.map((res) =>
-        res.id === id ? { ...res, status: "checked-in" as const } : res,
-      ),
-    );
-  };
+      prev.map((res) => (res.id === id ? { ...res, status: "checked-in" as const } : res)),
+    )
+  }
 
   const handleCheckOut = (id: string) => {
-    setReservations((prev) =>
-      prev.map((res) =>
-        res.id === id ? { ...res, status: "checked-out" as const } : res,
-      ),
-    );
+    setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, status: "checked-out" as const } : res)))
     setFilteredReservations((prev) =>
-      prev.map((res) =>
-        res.id === id ? { ...res, status: "checked-out" as const } : res,
-      ),
-    );
-  };
+      prev.map((res) => (res.id === id ? { ...res, status: "checked-out" as const } : res)),
+    )
+  }
 
-<<<<<<< HEAD:app/reservations/page.tsx
   const handleNewReservation = (newReservation: any) => {
     setReservations((prev) => [newReservation, ...prev])
     setFilteredReservations((prev) => [newReservation, ...prev])
@@ -256,22 +204,6 @@ export default function ReservationsPage() {
     setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
     setFilteredReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
   }
-=======
-  const handleNewReservation = () => {
-    // TODO: Open new reservation modal
-    console.log("Nueva reserva");
-  };
-
-  const handleBulkCheckIn = () => {
-    // TODO: Open bulk check-in modal
-    console.log("Check-in masivo");
-  };
-
-  const handleBulkCheckOut = () => {
-    // TODO: Open bulk check-out modal
-    console.log("Check-out masivo");
-  };
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/reservations/page.tsx
 
   return (
     <div className="flex flex-col h-full">
@@ -292,12 +224,9 @@ export default function ReservationsPage() {
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-foreground">
-              Reservaciones ({filteredReservations.length})
-            </h3>
+            <h3 className="text-lg font-semibold text-foreground">Reservaciones ({filteredReservations.length})</h3>
             <div className="text-sm text-muted-foreground">
-              Mostrando {filteredReservations.length} de {reservations.length}{" "}
-              reservaciones
+              Mostrando {filteredReservations.length} de {reservations.length} reservaciones
             </div>
           </div>
 
@@ -315,9 +244,7 @@ export default function ReservationsPage() {
 
           {filteredReservations.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                No se encontraron reservaciones con los filtros aplicados
-              </p>
+              <p className="text-muted-foreground">No se encontraron reservaciones con los filtros aplicados</p>
             </div>
           )}
         </div>
@@ -352,5 +279,5 @@ export default function ReservationsPage() {
         onUpdate={handleUpdateReservation}
       />
     </div>
-  );
+  )
 }

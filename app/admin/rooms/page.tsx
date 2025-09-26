@@ -1,29 +1,18 @@
-"use client";
+"use client"
 
-<<<<<<< HEAD:app/rooms/page.tsx
 import { useState } from "react"
 import { Header } from "@/components/layout/header"
-import { RoomCard } from "@/components/rooms/room-card"
-import { HousekeepingPanel } from "@/components/rooms/housekeeping-panel"
-import { AssignRoomDialog, type AssignmentData } from "@/components/rooms/assign-room-dialog"
-import { CleanRoomDialog, type CleaningData } from "@/components/rooms/clean-room-dialog"
-import { MaintenanceDialog, type MaintenanceData } from "@/components/rooms/maintenance-dialog"
-import { RoomDetailsDialog } from "@/components/rooms/room-details-dialog"
+import { RoomCard } from "@/components/admin/rooms/room-card"
+import { HousekeepingPanel } from "@/components/admin/rooms/housekeeping-panel"
+import { AssignRoomDialog, type AssignmentData } from "@/components/admin/rooms/assign-room-dialog"
+import { CleanRoomDialog, type CleaningData } from "@/components/admin/rooms/clean-room-dialog"
+import { MaintenanceDialog, type MaintenanceData } from "@/components/admin/rooms/maintenance-dialog"
+import { RoomDetailsDialog } from "@/components/admin/rooms/room-details-dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-=======
-import { useState } from "react";
-import { Header } from "@/components/layout/header";
-import { RoomCard } from "@/components/admin/rooms/room-card";
-import { HousekeepingPanel } from "@/components/admin/rooms/housekeeping-panel";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/rooms/page.tsx
 
 // Mock data
 const mockRooms = [
@@ -74,8 +63,7 @@ const mockRooms = [
     capacity: 2,
     amenities: ["wifi", "tv", "ac"],
     price: 1800,
-    maintenanceNotes:
-      "A/C no funciona correctamente, técnico programado para mañana",
+    maintenanceNotes: "A/C no funciona correctamente, técnico programado para mañana",
     position: { x: 80, y: 30 },
   },
   {
@@ -104,7 +92,7 @@ const mockRooms = [
     lastCleaned: "2025-09-23 10:30",
     position: { x: 60, y: 40 },
   },
-];
+]
 
 const mockHousekeepingTasks = [
   {
@@ -146,10 +134,9 @@ const mockHousekeepingTasks = [
     estimatedTime: 15,
     status: "completed" as const,
   },
-];
+]
 
 export default function RoomsPage() {
-<<<<<<< HEAD:app/rooms/page.tsx
   const [housekeepingTasks, setHousekeepingTasks] = useState(mockHousekeepingTasks)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -161,21 +148,10 @@ export default function RoomsPage() {
   const [selectedRoomData, setSelectedRoomData] = useState<any>(null)
   const [rooms, setRooms] = useState(mockRooms)
   const { toast } = useToast()
-=======
-  const [housekeepingTasks, setHousekeepingTasks] = useState(
-    mockHousekeepingTasks,
-  );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/rooms/page.tsx
 
   const handleTaskUpdate = (taskId: string, status: string) => {
-    setHousekeepingTasks((prev) =>
-      prev.map((task) =>
-        task.id === taskId ? { ...task, status: status as any } : task,
-      ),
-    );
-  };
+    setHousekeepingTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, status: status as any } : task)))
+  }
 
   const handleAssignRoom = (roomId: string) => {
     const room = rooms.find((r) => r.id === roomId)
@@ -271,19 +247,14 @@ export default function RoomsPage() {
   const filteredRooms = rooms.filter((room) => {
     const matchesSearch =
       room.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (room.guest &&
-        room.guest.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus =
-      statusFilter === "all" || room.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+      (room.guest && room.guest.toLowerCase().includes(searchTerm.toLowerCase()))
+    const matchesStatus = statusFilter === "all" || room.status === statusFilter
+    return matchesSearch && matchesStatus
+  })
 
   return (
     <div className="flex flex-col h-full">
-      <Header
-        title="Gestión de Habitaciones"
-        subtitle="Control de habitaciones, asignaciones y housekeeping"
-      />
+      <Header title="Gestión de Habitaciones" subtitle="Control de habitaciones, asignaciones y housekeeping" />
 
       <div className="flex-1 p-6">
         <Tabs defaultValue="rooms" className="space-y-6">
@@ -340,29 +311,17 @@ export default function RoomsPage() {
                 <RoomCard
                   key={room.id}
                   room={room}
-<<<<<<< HEAD:app/rooms/page.tsx
                   onAssign={handleAssignRoom}
                   onClean={handleCleanRoom}
                   onMaintenance={handleMaintenanceRoom}
                   onViewDetails={handleViewDetails}
-=======
-                  onAssign={(id) => console.log("Asignar habitación:", id)}
-                  onClean={(id) => console.log("Limpiar habitación:", id)}
-                  onMaintenance={(id) =>
-                    console.log("Mantenimiento habitación:", id)
-                  }
-                  onViewDetails={(id) => console.log("Ver detalles:", id)}
->>>>>>> be72ef3 (añadiendo los gráficos estadísticos):app/admin/rooms/page.tsx
                 />
               ))}
             </div>
           </TabsContent>
 
           <TabsContent value="housekeeping" className="space-y-6">
-            <HousekeepingPanel
-              tasks={housekeepingTasks}
-              onTaskUpdate={handleTaskUpdate}
-            />
+            <HousekeepingPanel tasks={housekeepingTasks} onTaskUpdate={handleTaskUpdate} />
           </TabsContent>
         </Tabs>
       </div>
@@ -387,5 +346,5 @@ export default function RoomsPage() {
       />
       <RoomDetailsDialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen} room={selectedRoomData} />
     </div>
-  );
+  )
 }

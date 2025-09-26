@@ -3,6 +3,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
+// this is the elias' branch
+
 export function BottomNavigation() {
   const navItems = [
     {
