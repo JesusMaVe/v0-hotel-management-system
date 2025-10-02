@@ -189,7 +189,7 @@ export function RoomCard({ room, onAssign, onClean, onMaintenance, onViewDetails
       {/* Actions */}
       <div className="flex items-center space-x-2">
         {room.status === "available" && onAssign && (
-          <Button size="sm" className="flex-1">
+          <Button size="sm" className="flex-1" onClick={() => onAssign(room.id)}>
             Asignar
           </Button>
         )}
