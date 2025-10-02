@@ -5,7 +5,19 @@ import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { RecommendationDetailsDialog } from "@/components/ai/recommendation-details-dialog"
 import { Sparkles, TrendingUp, Users, DollarSign, Target, Zap, Gift, Star } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface Recommendation {
   id: string
@@ -33,6 +45,11 @@ export function RecommendationEngine({
   onDismissRecommendation,
 }: RecommendationEngineProps) {
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [discardDialogOpen, setDiscardDialogOpen] = useState(false)
+  const [recommendationToDiscard, setRecommendationToDiscard] = useState<string>("")
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
+  const [selectedRecommendation, setSelectedRecommendation] = useState<Recommendation | null>(null)
+  const { toast } = useToast()
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -88,9 +105,35 @@ export function RecommendationEngine({
   const totalPotentialRevenue = recommendations.reduce((sum, r) => sum + r.potentialRevenue, 0)
   const highPriorityCount = recommendations.filter((r) => r.priority === "high" || r.priority === "critical").length
 
+  const handleDiscardClick = (id: string) => {
+    setRecommendationToDiscard(id)
+    setDiscardDialogOpen(true)
+  }
+
+  const handleConfirmDiscard = () => {
+    onDismissRecommendation(recommendationToDiscard)
+    setDiscardDialogOpen(false)
+    toast({
+      title: "Recomendación Descartada",
+      description: "La recomendación ha sido descartada exitosamente",
+    })
+  }
+
+  const handleViewDetails = (recommendation: Recommendation) => {
+    setSelectedRecommendation(recommendation)
+    setDetailsDialogOpen(true)
+  }
+
+  const handleApply = (id: string) => {
+    onApplyRecommendation(id)
+    toast({
+      title: "Recomendación Aplicada",
+      description: "La recomendación ha sido aplicada exitosamente",
+    })
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4">
           <div className="flex items-center space-x-3">
@@ -129,7 +172,6 @@ export function RecommendationEngine({
         </Card>
       </div>
 
-      {/* Category Filter */}
       <Card className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-foreground">Motor de Recomendaciones IA</h3>
@@ -154,7 +196,6 @@ export function RecommendationEngine({
         </div>
       </Card>
 
-      {/* Recommendations List */}
       <div className="space-y-4">
         {filteredRecommendations.map((recommendation) => (
           <Card key={recommendation.id} className="p-6 hover:border-accent/50 transition-colors">
@@ -185,7 +226,6 @@ export function RecommendationEngine({
               </div>
             </div>
 
-            {/* Confidence Score */}
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-foreground">Confianza de IA</span>
@@ -194,7 +234,6 @@ export function RecommendationEngine({
               <Progress value={recommendation.confidence} className="h-2" />
             </div>
 
-            {/* Action Details */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="p-3 rounded-lg bg-muted">
                 <p className="text-sm font-medium text-foreground mb-1">Acción Requerida</p>
@@ -206,20 +245,15 @@ export function RecommendationEngine({
               </div>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center space-x-3">
-              <Button
-                size="sm"
-                onClick={() => onApplyRecommendation(recommendation.id)}
-                className="flex items-center space-x-2"
-              >
+              <Button size="sm" onClick={() => handleApply(recommendation.id)} className="flex items-center space-x-2">
                 <Zap className="h-4 w-4" />
                 <span>Aplicar Recomendación</span>
               </Button>
-              <Button size="sm" variant="outline" onClick={() => onDismissRecommendation(recommendation.id)}>
+              <Button size="sm" variant="outline" onClick={() => handleDiscardClick(recommendation.id)}>
                 Descartar
               </Button>
-              <Button size="sm" variant="ghost">
+              <Button size="sm" variant="ghost" onClick={() => handleViewDetails(recommendation)}>
                 Ver Detalles
               </Button>
             </div>
@@ -233,6 +267,27 @@ export function RecommendationEngine({
           <p className="text-muted-foreground">No hay recomendaciones disponibles para la categoría seleccionada</p>
         </Card>
       )}
+
+      <AlertDialog open={discardDialogOpen} onOpenChange={setDiscardDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Estás seguro que quieres descartar?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. La recomendación será eliminada permanentemente y no podrás recuperarla.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmDiscard}>Sí, descartar</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <RecommendationDetailsDialog
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
+        recommendation={selectedRecommendation}
+      />
     </div>
   )
 }

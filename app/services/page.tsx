@@ -4,11 +4,12 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, Utensils, Calendar, ConciergeBell as Concierge, TrendingUp } from "lucide-react"
+import { Sparkles, Utensils, Calendar, ConciergeBell as Concierge, TrendingUp, BookOpen } from "lucide-react"
 import { SpaManagement } from "@/components/services/spa-management"
 import { RestaurantManagement } from "@/components/services/restaurant-management"
 import { EventsManagement } from "@/components/services/events-management"
 import { ConciergeManagement } from "@/components/services/concierge-management"
+import { ServiceCatalogDialog } from "@/components/services/service-catalog-dialog"
 
 const serviceStats = [
   {
@@ -43,6 +44,7 @@ const serviceStats = [
 
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState("overview")
+  const [showCatalogDialog, setShowCatalogDialog] = useState(false)
 
   const renderServiceContent = () => {
     switch (activeService) {
@@ -59,10 +61,18 @@ export default function ServicesPage() {
           <div className="space-y-8 px-2.5">
             <div className="space-y-4">
               <div className="space-y-2">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-normal mx-0 px-2.5 py-0">Gestión de Servicios</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground leading-tight tracking-normal mx-0 px-2.5 py-0">
+                  Gestión de Servicios
+                </h2>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-3xl px-2.5">
                   Administra todos los servicios adicionales del hotel de manera integral
                 </p>
+              </div>
+              <div className="px-2.5">
+                <Button onClick={() => setShowCatalogDialog(true)} variant="outline">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Ver Catálogo Completo
+                </Button>
               </div>
             </div>
 
@@ -330,6 +340,8 @@ export default function ServicesPage() {
       </div>
 
       {renderServiceContent()}
+
+      <ServiceCatalogDialog open={showCatalogDialog} onOpenChange={setShowCatalogDialog} />
     </div>
   )
 }

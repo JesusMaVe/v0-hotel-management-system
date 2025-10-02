@@ -5,16 +5,21 @@ import { Header } from "@/components/layout/header"
 import { ReservationCard } from "@/components/reservations/reservation-card"
 import { ReservationFilters } from "@/components/reservations/reservation-filters"
 import { QuickActions } from "@/components/reservations/quick-actions"
+import { NewReservationDialog } from "@/components/reservations/new-reservation-dialog"
+import { BulkCheckInDialog } from "@/components/reservations/bulk-checkin-dialog"
+import { BulkCheckOutDialog } from "@/components/reservations/bulk-checkout-dialog"
+import { CalendarViewDialog } from "@/components/reservations/calendar-view-dialog"
+import { EditReservationDialog } from "@/components/reservations/edit-reservation-dialog"
+import { useToast } from "@/hooks/use-toast"
 
-// Mock data
 const mockReservations = [
   {
     id: "RES-001",
     guestName: "Ana María González Herrera",
     email: "ana.gonzalez@email.com",
     phone: "+52 55 1234 5678",
-    checkIn: "2025-09-23",
-    checkOut: "2025-09-26",
+    checkIn: "2025-02-10",
+    checkOut: "2025-02-13",
     roomType: "Suite Ejecutiva",
     roomNumber: "101",
     status: "confirmed" as const,
@@ -27,8 +32,8 @@ const mockReservations = [
     guestName: "Carlos Rodríguez Martín",
     email: "carlos.rodriguez@email.com",
     phone: "+52 55 9876 5432",
-    checkIn: "2025-09-23",
-    checkOut: "2025-09-25",
+    checkIn: "2025-02-10",
+    checkOut: "2025-02-12",
     roomType: "Standard",
     roomNumber: "205",
     status: "checked-in" as const,
@@ -40,8 +45,8 @@ const mockReservations = [
     guestName: "María José López Silva",
     email: "maria.lopez@email.com",
     phone: "+52 55 5555 1234",
-    checkIn: "2025-09-24",
-    checkOut: "2025-09-27",
+    checkIn: "2025-02-11",
+    checkOut: "2025-02-14",
     roomType: "Suite",
     status: "pending" as const,
     totalAmount: 6300,
@@ -53,8 +58,8 @@ const mockReservations = [
     guestName: "Roberto Fernández Castro",
     email: "roberto.fernandez@email.com",
     phone: "+52 55 7777 8888",
-    checkIn: "2025-09-22",
-    checkOut: "2025-09-23",
+    checkIn: "2025-02-09",
+    checkOut: "2025-02-10",
     roomType: "Ejecutiva",
     roomNumber: "312",
     status: "checked-out" as const,
@@ -66,19 +71,66 @@ const mockReservations = [
     guestName: "Laura Sánchez Morales",
     email: "laura.sanchez@email.com",
     phone: "+52 55 3333 4444",
-    checkIn: "2025-09-25",
-    checkOut: "2025-09-28",
+    checkIn: "2025-02-12",
+    checkOut: "2025-02-15",
     roomType: "Presidencial",
     status: "confirmed" as const,
     totalAmount: 12000,
     guests: 4,
     specialRequests: "Decoración especial para aniversario, champagne de bienvenida",
   },
+  {
+    id: "RES-006",
+    guestName: "Pedro Ramírez Torres",
+    email: "pedro.ramirez@email.com",
+    phone: "+52 55 2222 3333",
+    checkIn: "2025-02-10",
+    checkOut: "2025-02-11",
+    roomType: "Standard",
+    roomNumber: "108",
+    status: "confirmed" as const,
+    totalAmount: 1400,
+    guests: 1,
+  },
+  {
+    id: "RES-007",
+    guestName: "Isabel Martínez Ruiz",
+    email: "isabel.martinez@email.com",
+    phone: "+52 55 4444 5555",
+    checkIn: "2025-02-13",
+    checkOut: "2025-02-16",
+    roomType: "Suite",
+    status: "confirmed" as const,
+    totalAmount: 12600,
+    guests: 2,
+    specialRequests: "Luna de miel, decoración romántica",
+  },
+  {
+    id: "RES-008",
+    guestName: "Jorge Luis Hernández",
+    email: "jorge.hernandez@email.com",
+    phone: "+52 55 6666 7777",
+    checkIn: "2025-02-08",
+    checkOut: "2025-02-10",
+    roomType: "Ejecutiva",
+    roomNumber: "215",
+    status: "checked-in" as const,
+    totalAmount: 5600,
+    guests: 1,
+  },
 ]
 
 export default function ReservationsPage() {
   const [reservations, setReservations] = useState(mockReservations)
   const [filteredReservations, setFilteredReservations] = useState(mockReservations)
+
+  const [newReservationOpen, setNewReservationOpen] = useState(false)
+  const [bulkCheckInOpen, setBulkCheckInOpen] = useState(false)
+  const [bulkCheckOutOpen, setBulkCheckOutOpen] = useState(false)
+  const [calendarViewOpen, setCalendarViewOpen] = useState(false)
+  const [editReservationOpen, setEditReservationOpen] = useState(false)
+  const [selectedReservation, setSelectedReservation] = useState<any>(null)
+  const { toast } = useToast()
 
   const handleFiltersChange = (filters: any) => {
     let filtered = reservations
@@ -117,19 +169,40 @@ export default function ReservationsPage() {
     )
   }
 
-  const handleNewReservation = () => {
-    // TODO: Open new reservation modal
-    console.log("Nueva reserva")
+  const handleNewReservation = (newReservation: any) => {
+    setReservations((prev) => [newReservation, ...prev])
+    setFilteredReservations((prev) => [newReservation, ...prev])
   }
 
-  const handleBulkCheckIn = () => {
-    // TODO: Open bulk check-in modal
-    console.log("Check-in masivo")
+  const handleBulkCheckIn = (ids: string[]) => {
+    setReservations((prev) =>
+      prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-in" as const } : res)),
+    )
+    setFilteredReservations((prev) =>
+      prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-in" as const } : res)),
+    )
   }
 
-  const handleBulkCheckOut = () => {
-    // TODO: Open bulk check-out modal
-    console.log("Check-out masivo")
+  const handleBulkCheckOut = (ids: string[]) => {
+    setReservations((prev) =>
+      prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-out" as const } : res)),
+    )
+    setFilteredReservations((prev) =>
+      prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-out" as const } : res)),
+    )
+  }
+
+  const handleEdit = (id: string) => {
+    const reservation = reservations.find((r) => r.id === id)
+    if (reservation) {
+      setSelectedReservation(reservation)
+      setEditReservationOpen(true)
+    }
+  }
+
+  const handleUpdateReservation = (id: string, updatedData: any) => {
+    setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
+    setFilteredReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
   }
 
   return (
@@ -141,14 +214,14 @@ export default function ReservationsPage() {
 
       <div className="flex-1 p-6 space-y-6">
         <QuickActions
-          onNewReservation={handleNewReservation}
-          onBulkCheckIn={handleBulkCheckIn}
-          onBulkCheckOut={handleBulkCheckOut}
+          onNewReservation={() => setNewReservationOpen(true)}
+          onBulkCheckIn={() => setBulkCheckInOpen(true)}
+          onBulkCheckOut={() => setBulkCheckOutOpen(true)}
+          onViewCalendar={() => setCalendarViewOpen(true)}
         />
 
         <ReservationFilters onFiltersChange={handleFiltersChange} />
 
-        {/* Reservations Grid */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-foreground">Reservaciones ({filteredReservations.length})</h3>
@@ -164,7 +237,7 @@ export default function ReservationsPage() {
                 reservation={reservation}
                 onCheckIn={handleCheckIn}
                 onCheckOut={handleCheckOut}
-                onEdit={(id) => console.log("Editar reserva:", id)}
+                onEdit={handleEdit}
               />
             ))}
           </div>
@@ -176,6 +249,35 @@ export default function ReservationsPage() {
           )}
         </div>
       </div>
+
+      <NewReservationDialog
+        open={newReservationOpen}
+        onOpenChange={setNewReservationOpen}
+        onSubmit={handleNewReservation}
+      />
+
+      <BulkCheckInDialog
+        open={bulkCheckInOpen}
+        onOpenChange={setBulkCheckInOpen}
+        reservations={reservations}
+        onCheckIn={handleBulkCheckIn}
+      />
+
+      <BulkCheckOutDialog
+        open={bulkCheckOutOpen}
+        onOpenChange={setBulkCheckOutOpen}
+        reservations={reservations}
+        onCheckOut={handleBulkCheckOut}
+      />
+
+      <CalendarViewDialog open={calendarViewOpen} onOpenChange={setCalendarViewOpen} reservations={reservations} />
+
+      <EditReservationDialog
+        open={editReservationOpen}
+        onOpenChange={setEditReservationOpen}
+        reservation={selectedReservation}
+        onUpdate={handleUpdateReservation}
+      />
     </div>
   )
 }

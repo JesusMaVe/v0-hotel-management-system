@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Clock, DollarSign, User, MapPin, Calendar, Plus, Search, Filter } from "lucide-react"
+import { NewServiceDialog } from "./new-service-dialog"
+import { BookServiceDialog } from "./book-service-dialog"
+import { EditServiceDialog } from "./edit-service-dialog"
 
 const spaServices = [
   {
@@ -49,13 +52,26 @@ const spaServices = [
 
 export function SpaManagement() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedService, setSelectedService] = useState<number | null>(null)
+  const [selectedService, setSelectedService] = useState<any>(null)
+  const [showNewServiceDialog, setShowNewServiceDialog] = useState(false)
+  const [showBookDialog, setShowBookDialog] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
 
   const filteredServices = spaServices.filter(
     (service) =>
       service.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
       service.terapeuta.toLowerCase().includes(searchTerm.toLowerCase()),
   )
+
+  const handleBook = (service: any) => {
+    setSelectedService(service)
+    setShowBookDialog(true)
+  }
+
+  const handleEdit = (service: any) => {
+    setSelectedService(service)
+    setShowEditDialog(true)
+  }
 
   return (
     <div className="space-y-6 px-2.5">
@@ -64,7 +80,7 @@ export function SpaManagement() {
           <h2 className="text-2xl font-bold text-foreground">Gestión de Spa</h2>
           <p className="text-muted-foreground">Administra servicios, terapeutas y citas del spa</p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button className="w-full sm:w-auto" onClick={() => setShowNewServiceDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Servicio
         </Button>
@@ -129,11 +145,16 @@ export function SpaManagement() {
               </div>
 
               <div className="flex gap-2 pt-2">
-                <Button size="sm" className="flex-1">
+                <Button size="sm" className="flex-1" onClick={() => handleBook(service)}>
                   <Calendar className="h-4 w-4 mr-1" />
                   Reservar
                 </Button>
-                <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 bg-transparent"
+                  onClick={() => handleEdit(service)}
+                >
                   Editar
                 </Button>
               </div>
@@ -141,6 +162,10 @@ export function SpaManagement() {
           </Card>
         ))}
       </div>
+
+      <NewServiceDialog open={showNewServiceDialog} onOpenChange={setShowNewServiceDialog} serviceType="spa" />
+      <BookServiceDialog open={showBookDialog} onOpenChange={setShowBookDialog} service={selectedService} />
+      <EditServiceDialog open={showEditDialog} onOpenChange={setShowEditDialog} service={selectedService} />
     </div>
   )
 }

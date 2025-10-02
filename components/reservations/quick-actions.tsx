@@ -8,9 +8,10 @@ interface QuickActionsProps {
   onNewReservation: () => void
   onBulkCheckIn: () => void
   onBulkCheckOut: () => void
+  onViewCalendar: () => void
 }
 
-export function QuickActions({ onNewReservation, onBulkCheckIn, onBulkCheckOut }: QuickActionsProps) {
+export function QuickActions({ onNewReservation, onBulkCheckIn, onBulkCheckOut, onViewCalendar }: QuickActionsProps) {
   return (
     <Card className="p-6 mb-6">
       <h3 className="text-lg font-semibold text-foreground mb-4">Acciones Rápidas</h3>
@@ -31,7 +32,7 @@ export function QuickActions({ onNewReservation, onBulkCheckIn, onBulkCheckOut }
           <span>Check-out Masivo</span>
         </Button>
 
-        <Button variant="outline" className="flex items-center space-x-2 h-12 bg-transparent">
+        <Button variant="outline" onClick={onViewCalendar} className="flex items-center space-x-2 h-12 bg-transparent">
           <Calendar className="h-5 w-5" />
           <span>Ver Calendario</span>
         </Button>

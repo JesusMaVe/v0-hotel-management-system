@@ -4,10 +4,15 @@ import { useState } from "react"
 import { Header } from "@/components/layout/header"
 import { RoomCard } from "@/components/rooms/room-card"
 import { HousekeepingPanel } from "@/components/rooms/housekeeping-panel"
+import { AssignRoomDialog, type AssignmentData } from "@/components/rooms/assign-room-dialog"
+import { CleanRoomDialog, type CleaningData } from "@/components/rooms/clean-room-dialog"
+import { MaintenanceDialog, type MaintenanceData } from "@/components/rooms/maintenance-dialog"
+import { RoomDetailsDialog } from "@/components/rooms/room-details-dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 // Mock data
 const mockRooms = [
@@ -135,12 +140,111 @@ export default function RoomsPage() {
   const [housekeepingTasks, setHousekeepingTasks] = useState(mockHousekeepingTasks)
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false)
+  const [cleanDialogOpen, setCleanDialogOpen] = useState(false)
+  const [maintenanceDialogOpen, setMaintenanceDialogOpen] = useState(false)
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false)
+  const [selectedRoom, setSelectedRoom] = useState<string>("")
+  const [selectedRoomData, setSelectedRoomData] = useState<any>(null)
+  const [rooms, setRooms] = useState(mockRooms)
+  const { toast } = useToast()
 
   const handleTaskUpdate = (taskId: string, status: string) => {
     setHousekeepingTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, status: status as any } : task)))
   }
 
-  const filteredRooms = mockRooms.filter((room) => {
+  const handleAssignRoom = (roomId: string) => {
+    const room = rooms.find((r) => r.id === roomId)
+    if (room) {
+      setSelectedRoom(room.number)
+      setAssignDialogOpen(true)
+    }
+  }
+
+  const handleCleanRoom = (roomId: string) => {
+    const room = rooms.find((r) => r.id === roomId)
+    if (room) {
+      setSelectedRoom(room.number)
+      setCleanDialogOpen(true)
+    }
+  }
+
+  const handleMaintenanceRoom = (roomId: string) => {
+    const room = rooms.find((r) => r.id === roomId)
+    if (room) {
+      setSelectedRoom(room.number)
+      setMaintenanceDialogOpen(true)
+    }
+  }
+
+  const handleViewDetails = (roomId: string) => {
+    const room = rooms.find((r) => r.id === roomId)
+    if (room) {
+      setSelectedRoomData(room)
+      setDetailsDialogOpen(true)
+    }
+  }
+
+  const onAssignSubmit = (data: AssignmentData) => {
+    setRooms((prev) =>
+      prev.map((room) =>
+        room.number === selectedRoom
+          ? {
+              ...room,
+              status: "occupied" as const,
+              guest: data.guestName,
+              checkOut: data.checkOut.toISOString().split("T")[0],
+            }
+          : room,
+      ),
+    )
+    toast({
+      title: "Habitación Asignada",
+      description: `Habitación ${selectedRoom} asignada a ${data.guestName}`,
+    })
+  }
+
+  const onCleanSubmit = (data: CleaningData) => {
+    const newTask = {
+      id: `task-${Date.now()}`,
+      roomNumber: selectedRoom,
+      type: data.type as any,
+      assignedTo: data.assignedTo,
+      priority: data.priority as any,
+      estimatedTime: 45,
+      status: "pending" as const,
+      notes: data.notes,
+    }
+    setHousekeepingTasks((prev) => [...prev, newTask])
+    setRooms((prev) =>
+      prev.map((room) => (room.number === selectedRoom ? { ...room, status: "cleaning" as const } : room)),
+    )
+    toast({
+      title: "Limpieza Programada",
+      description: `Tarea de limpieza creada para habitación ${selectedRoom}`,
+    })
+  }
+
+  const onMaintenanceSubmit = (data: MaintenanceData) => {
+    setRooms((prev) =>
+      prev.map((room) =>
+        room.number === selectedRoom
+          ? {
+              ...room,
+              status: "maintenance" as const,
+              maintenanceNotes: data.description,
+            }
+          : room,
+      ),
+    )
+    toast({
+      title: "Mantenimiento Reportado",
+      description: `Problema reportado para habitación ${selectedRoom}`,
+      variant: "destructive",
+    })
+  }
+
+  const filteredRooms = rooms.filter((room) => {
     const matchesSearch =
       room.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (room.guest && room.guest.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -207,10 +311,10 @@ export default function RoomsPage() {
                 <RoomCard
                   key={room.id}
                   room={room}
-                  onAssign={(id) => console.log("Asignar habitación:", id)}
-                  onClean={(id) => console.log("Limpiar habitación:", id)}
-                  onMaintenance={(id) => console.log("Mantenimiento habitación:", id)}
-                  onViewDetails={(id) => console.log("Ver detalles:", id)}
+                  onAssign={handleAssignRoom}
+                  onClean={handleCleanRoom}
+                  onMaintenance={handleMaintenanceRoom}
+                  onViewDetails={handleViewDetails}
                 />
               ))}
             </div>
@@ -221,6 +325,26 @@ export default function RoomsPage() {
           </TabsContent>
         </Tabs>
       </div>
+
+      <AssignRoomDialog
+        open={assignDialogOpen}
+        onOpenChange={setAssignDialogOpen}
+        roomNumber={selectedRoom}
+        onAssign={onAssignSubmit}
+      />
+      <CleanRoomDialog
+        open={cleanDialogOpen}
+        onOpenChange={setCleanDialogOpen}
+        roomNumber={selectedRoom}
+        onClean={onCleanSubmit}
+      />
+      <MaintenanceDialog
+        open={maintenanceDialogOpen}
+        onOpenChange={setMaintenanceDialogOpen}
+        roomNumber={selectedRoom}
+        onMaintenance={onMaintenanceSubmit}
+      />
+      <RoomDetailsDialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen} room={selectedRoomData} />
     </div>
   )
 }

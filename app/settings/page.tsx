@@ -9,13 +9,41 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Settings, Hotel, Users, Bell, Shield, Database, Save } from "lucide-react"
+import { Settings, Hotel, Users, Bell, Shield, Database, Save, Plus, Trash2 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function SettingsPage() {
+  const { toast } = useToast()
+
   const [hotelName, setHotelName] = useState("Villa Magna Family Resorts")
   const [currency, setCurrency] = useState("MXN")
   const [timezone, setTimezone] = useState("America/Mexico_City")
   const [language, setLanguage] = useState("es")
+  const [totalRooms, setTotalRooms] = useState("120")
+  const [checkInTime, setCheckInTime] = useState("15:00")
+  const [checkOutTime, setCheckOutTime] = useState("12:00")
+  const [taxRate, setTaxRate] = useState("16.00")
+
+  const [roomTypes, setRoomTypes] = useState([
+    { type: "Estándar", count: 60, price: 2500 },
+    { type: "Superior", count: 40, price: 3200 },
+    { type: "Suite", count: 20, price: 4800 },
+  ])
+
+  const [users, setUsers] = useState([
+    { id: 1, name: "Ana García", role: "Administrador", email: "ana@villamagna.com", status: "Activo" },
+    { id: 2, name: "Carlos López", role: "Recepcionista", email: "carlos@villamagna.com", status: "Activo" },
+    { id: 3, name: "María Rodríguez", role: "Housekeeping", email: "maria@villamagna.com", status: "Inactivo" },
+  ])
+
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -25,9 +53,101 @@ export default function SettingsPage() {
     revenue: true,
   })
 
+  const [security, setSecurity] = useState({
+    twoFactor: true,
+    multipleSessions: true,
+    autoLock: true,
+    minPasswordLength: "8",
+    passwordExpiry: "90",
+  })
+
+  const [integrations, setIntegrations] = useState([
+    { id: 1, name: "Sistema de Pagos", status: "Conectado", description: "Stripe, PayPal" },
+    { id: 2, name: "Email Marketing", status: "Desconectado", description: "Mailchimp, SendGrid" },
+    { id: 3, name: "Análisis Web", status: "Conectado", description: "Google Analytics" },
+    { id: 4, name: "Redes Sociales", status: "Conectado", description: "Facebook, Instagram" },
+    { id: 5, name: "Sistema POS", status: "Desconectado", description: "Restaurante y Bar" },
+  ])
+
+  const [newUserDialog, setNewUserDialog] = useState(false)
+  const [newUserName, setNewUserName] = useState("")
+  const [newUserEmail, setNewUserEmail] = useState("")
+  const [newUserRole, setNewUserRole] = useState("")
+
   const saveSettings = () => {
-    console.log("Guardando configuración...")
-    // TODO: Implement actual save functionality
+    toast({
+      title: "Configuración Guardada",
+      description: "Todos los cambios han sido guardados exitosamente",
+    })
+  }
+
+  const updateRoomTypePrice = (index: number, newPrice: string) => {
+    setRoomTypes((prev) =>
+      prev.map((room, i) => (i === index ? { ...room, price: Number.parseInt(newPrice) || 0 } : room)),
+    )
+  }
+
+  const addNewUser = () => {
+    if (!newUserName || !newUserEmail || !newUserRole) {
+      toast({
+        title: "Error",
+        description: "Por favor completa todos los campos",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const newUser = {
+      id: users.length + 1,
+      name: newUserName,
+      email: newUserEmail,
+      role: newUserRole,
+      status: "Activo",
+    }
+
+    setUsers((prev) => [...prev, newUser])
+    setNewUserName("")
+    setNewUserEmail("")
+    setNewUserRole("")
+    setNewUserDialog(false)
+
+    toast({
+      title: "Usuario Agregado",
+      description: `${newUserName} ha sido agregado exitosamente`,
+    })
+  }
+
+  const deleteUser = (userId: number) => {
+    setUsers((prev) => prev.filter((user) => user.id !== userId))
+    toast({
+      title: "Usuario Eliminado",
+      description: "El usuario ha sido eliminado del sistema",
+    })
+  }
+
+  const toggleUserStatus = (userId: number) => {
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === userId ? { ...user, status: user.status === "Activo" ? "Inactivo" : "Activo" } : user,
+      ),
+    )
+  }
+
+  const toggleIntegration = (integrationId: number) => {
+    setIntegrations((prev) =>
+      prev.map((integration) =>
+        integration.id === integrationId
+          ? {
+              ...integration,
+              status: integration.status === "Conectado" ? "Desconectado" : "Conectado",
+            }
+          : integration,
+      ),
+    )
+    toast({
+      title: "Integración Actualizada",
+      description: "El estado de la integración ha sido actualizado",
+    })
   }
 
   return (
@@ -160,36 +280,57 @@ export default function SettingsPage() {
                   <Label htmlFor="total-rooms" className="text-sm font-medium">
                     Total de Habitaciones
                   </Label>
-                  <Input id="total-rooms" type="number" defaultValue="120" className="h-10" />
+                  <Input
+                    id="total-rooms"
+                    type="number"
+                    value={totalRooms}
+                    onChange={(e) => setTotalRooms(e.target.value)}
+                    className="h-10"
+                  />
                 </div>
                 <div className="space-y-3">
                   <Label htmlFor="check-in" className="text-sm font-medium">
                     Hora de Check-in
                   </Label>
-                  <Input id="check-in" type="time" defaultValue="15:00" className="h-10" />
+                  <Input
+                    id="check-in"
+                    type="time"
+                    value={checkInTime}
+                    onChange={(e) => setCheckInTime(e.target.value)}
+                    className="h-10"
+                  />
                 </div>
                 <div className="space-y-3">
                   <Label htmlFor="check-out" className="text-sm font-medium">
                     Hora de Check-out
                   </Label>
-                  <Input id="check-out" type="time" defaultValue="12:00" className="h-10" />
+                  <Input
+                    id="check-out"
+                    type="time"
+                    value={checkOutTime}
+                    onChange={(e) => setCheckOutTime(e.target.value)}
+                    className="h-10"
+                  />
                 </div>
                 <div className="space-y-3">
                   <Label htmlFor="tax-rate" className="text-sm font-medium">
                     Tasa de Impuestos (%)
                   </Label>
-                  <Input id="tax-rate" type="number" step="0.01" defaultValue="16.00" className="h-10" />
+                  <Input
+                    id="tax-rate"
+                    type="number"
+                    step="0.01"
+                    value={taxRate}
+                    onChange={(e) => setTaxRate(e.target.value)}
+                    className="h-10"
+                  />
                 </div>
               </div>
 
               <div className="space-y-6">
                 <h4 className="font-semibold text-foreground text-base">Tipos de Habitación</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[
-                    { type: "Estándar", count: 60, price: 2500 },
-                    { type: "Superior", count: 40, price: 3200 },
-                    { type: "Suite", count: 20, price: 4800 },
-                  ].map((room, index) => (
+                  {roomTypes.map((room, index) => (
                     <Card key={index} className="p-5">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -200,7 +341,12 @@ export default function SettingsPage() {
                         </div>
                         <div className="space-y-2">
                           <Label className="text-xs font-medium text-muted-foreground">Precio Base</Label>
-                          <Input type="number" defaultValue={room.price} className="h-9 text-sm" />
+                          <Input
+                            type="number"
+                            value={room.price}
+                            onChange={(e) => updateRoomTypePrice(index, e.target.value)}
+                            className="h-9 text-sm"
+                          />
                         </div>
                       </div>
                     </Card>
@@ -226,24 +372,67 @@ export default function SettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
                 <h4 className="font-semibold text-foreground text-base">Usuarios Activos</h4>
-                <Button size="sm" className="w-full md:w-auto">
-                  Agregar Usuario
-                </Button>
+                <Dialog open={newUserDialog} onOpenChange={setNewUserDialog}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="w-full md:w-auto">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Agregar Usuario
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Agregar Nuevo Usuario</DialogTitle>
+                      <DialogDescription>Ingresa los datos del nuevo usuario del sistema</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="new-user-name">Nombre Completo</Label>
+                        <Input
+                          id="new-user-name"
+                          value={newUserName}
+                          onChange={(e) => setNewUserName(e.target.value)}
+                          placeholder="Juan Pérez"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="new-user-email">Email</Label>
+                        <Input
+                          id="new-user-email"
+                          type="email"
+                          value={newUserEmail}
+                          onChange={(e) => setNewUserEmail(e.target.value)}
+                          placeholder="juan@villamagna.com"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="new-user-role">Rol</Label>
+                        <Select value={newUserRole} onValueChange={setNewUserRole}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccionar rol" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Administrador">Administrador</SelectItem>
+                            <SelectItem value="Recepcionista">Recepcionista</SelectItem>
+                            <SelectItem value="Housekeeping">Housekeeping</SelectItem>
+                            <SelectItem value="Mantenimiento">Mantenimiento</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="flex justify-end space-x-2">
+                      <Button variant="outline" onClick={() => setNewUserDialog(false)}>
+                        Cancelar
+                      </Button>
+                      <Button onClick={addNewUser}>Agregar Usuario</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="space-y-4">
-                {[
-                  { name: "Ana García", role: "Administrador", email: "ana@villamagna.com", status: "Activo" },
-                  { name: "Carlos López", role: "Recepcionista", email: "carlos@villamagna.com", status: "Activo" },
-                  {
-                    name: "María Rodríguez",
-                    role: "Housekeeping",
-                    email: "maria@villamagna.com",
-                    status: "Inactivo",
-                  },
-                ].map((user, index) => (
+                {users.map((user) => (
                   <div
-                    key={index}
+                    key={user.id}
                     className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 p-4 border border-border rounded-lg"
                   >
                     <div className="space-y-2">
@@ -257,8 +446,16 @@ export default function SettingsPage() {
                       <Badge variant="outline" className="text-xs">
                         {user.role}
                       </Badge>
-                      <Button variant="ghost" size="sm" className="text-xs">
-                        Editar
+                      <Button variant="ghost" size="sm" className="text-xs" onClick={() => toggleUserStatus(user.id)}>
+                        {user.status === "Activo" ? "Desactivar" : "Activar"}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-error"
+                        onClick={() => deleteUser(user.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
@@ -389,7 +586,10 @@ export default function SettingsPage() {
                       Requiere verificación adicional para iniciar sesión
                     </p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={security.twoFactor}
+                    onCheckedChange={(checked) => setSecurity((prev) => ({ ...prev, twoFactor: checked }))}
+                  />
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="space-y-1 flex-1 pr-4">
@@ -398,7 +598,10 @@ export default function SettingsPage() {
                       Permitir múltiples sesiones activas por usuario
                     </p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={security.multipleSessions}
+                    onCheckedChange={(checked) => setSecurity((prev) => ({ ...prev, multipleSessions: checked }))}
+                  />
                 </div>
                 <div className="flex items-center justify-between py-2">
                   <div className="space-y-1 flex-1 pr-4">
@@ -407,7 +610,10 @@ export default function SettingsPage() {
                       Bloquear sesión después de inactividad
                     </p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={security.autoLock}
+                    onCheckedChange={(checked) => setSecurity((prev) => ({ ...prev, autoLock: checked }))}
+                  />
                 </div>
               </div>
 
@@ -416,11 +622,21 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <Label className="text-sm font-medium">Longitud Mínima</Label>
-                    <Input type="number" defaultValue="8" className="h-10" />
+                    <Input
+                      type="number"
+                      value={security.minPasswordLength}
+                      onChange={(e) => setSecurity((prev) => ({ ...prev, minPasswordLength: e.target.value }))}
+                      className="h-10"
+                    />
                   </div>
                   <div className="space-y-3">
                     <Label className="text-sm font-medium">Días para Expiración</Label>
-                    <Input type="number" defaultValue="90" className="h-10" />
+                    <Input
+                      type="number"
+                      value={security.passwordExpiry}
+                      onChange={(e) => setSecurity((prev) => ({ ...prev, passwordExpiry: e.target.value }))}
+                      className="h-10"
+                    />
                   </div>
                 </div>
               </div>
@@ -442,15 +658,9 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                {[
-                  { name: "Sistema de Pagos", status: "Conectado", description: "Stripe, PayPal" },
-                  { name: "Email Marketing", status: "Desconectado", description: "Mailchimp, SendGrid" },
-                  { name: "Análisis Web", status: "Conectado", description: "Google Analytics" },
-                  { name: "Redes Sociales", status: "Conectado", description: "Facebook, Instagram" },
-                  { name: "Sistema POS", status: "Desconectado", description: "Restaurante y Bar" },
-                ].map((integration, index) => (
+                {integrations.map((integration) => (
                   <div
-                    key={index}
+                    key={integration.id}
                     className="flex flex-col space-y-3 md:flex-row md:items-center md:justify-between md:space-y-0 p-5 border border-border rounded-lg"
                   >
                     <div className="space-y-2">
@@ -461,8 +671,13 @@ export default function SettingsPage() {
                       <Badge variant={integration.status === "Conectado" ? "default" : "secondary"} className="text-xs">
                         {integration.status}
                       </Badge>
-                      <Button variant="outline" size="sm" className="text-xs bg-transparent">
-                        {integration.status === "Conectado" ? "Configurar" : "Conectar"}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs bg-transparent"
+                        onClick={() => toggleIntegration(integration.id)}
+                      >
+                        {integration.status === "Conectado" ? "Desconectar" : "Conectar"}
                       </Button>
                     </div>
                   </div>

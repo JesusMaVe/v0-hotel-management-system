@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import { Users, MapPin, Clock, ChefHat, Plus, Calendar, DollarSign } from "lucide-react"
+import { EditMenuDialog } from "./edit-menu-dialog"
 
 const restaurantData = {
   mesas: [
@@ -66,6 +67,7 @@ const restaurantData = {
 
 export function RestaurantManagement() {
   const [searchTerm, setSearchTerm] = useState("")
+  const [showEditMenuDialog, setShowEditMenuDialog] = useState(false)
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -219,11 +221,19 @@ export function RestaurantManagement() {
                 </div>
               </div>
 
-              <Button className="w-full">Editar Menú</Button>
+              <Button className="w-full" onClick={() => setShowEditMenuDialog(true)}>
+                Editar Menú
+              </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <EditMenuDialog
+        open={showEditMenuDialog}
+        onOpenChange={setShowEditMenuDialog}
+        menuData={restaurantData.menuDelDia}
+      />
     </div>
   )
 }
