@@ -22,6 +22,7 @@ import {
   Phone,
   Mail,
 } from "lucide-react"
+import { NewConciergeRequestDialog } from "./new-concierge-request-dialog"
 
 const conciergeData = {
   serviciosVarios: {
@@ -78,6 +79,7 @@ const solicitudesRecientes = [
 
 export function ConciergeManagement() {
   const [activeTab, setActiveTab] = useState("solicitudes")
+  const [showNewRequestDialog, setShowNewRequestDialog] = useState(false)
 
   const getServiceIcon = (servicio: string) => {
     if (servicio.includes("Tour") || servicio.includes("arqueológico")) return <MapPin className="h-4 w-4" />
@@ -122,7 +124,7 @@ export function ConciergeManagement() {
           <h2 className="text-2xl font-bold text-foreground">Gestión de Concierge</h2>
           <p className="text-muted-foreground">Administra servicios de concierge y business center</p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button className="w-full sm:w-auto" onClick={() => setShowNewRequestDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nueva Solicitud
         </Button>
@@ -300,6 +302,15 @@ export function ConciergeManagement() {
           ))}
         </div>
       )}
+
+      <NewConciergeRequestDialog
+        open={showNewRequestDialog}
+        onOpenChange={setShowNewRequestDialog}
+        onSubmit={(request) => {
+          console.log("Nueva solicitud:", request)
+          // Aquí se podría agregar la lógica para guardar la solicitud
+        }}
+      />
     </div>
   )
 }

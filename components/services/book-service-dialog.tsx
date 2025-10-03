@@ -8,13 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { es } from "date-fns/locale"
 import { useToast } from "@/hooks/use-toast"
-import { cn } from "@/lib/utils"
 
 interface BookServiceDialogProps {
   open: boolean
@@ -24,10 +18,10 @@ interface BookServiceDialogProps {
 
 export function BookServiceDialog({ open, onOpenChange, service }: BookServiceDialogProps) {
   const { toast } = useToast()
-  const [date, setDate] = useState<Date>()
   const [formData, setFormData] = useState({
     habitacion: "",
     huespedes: "",
+    fecha: "",
     hora: "",
     notas: "",
   })
@@ -36,9 +30,17 @@ export function BookServiceDialog({ open, onOpenChange, service }: BookServiceDi
     e.preventDefault()
     toast({
       title: "Reserva confirmada",
-      description: `${service.nombre} reservado para ${format(date || new Date(), "PPP", { locale: es })} a las ${formData.hora}`,
+      description: `${service.nombre} reservado para ${formData.fecha} a las ${formData.hora}`,
     })
     onOpenChange(false)
+    // Reset form
+    setFormData({
+      habitacion: "",
+      huespedes: "",
+      fecha: "",
+      hora: "",
+      notas: "",
+    })
   }
 
   return (
@@ -73,21 +75,15 @@ export function BookServiceDialog({ open, onOpenChange, service }: BookServiceDi
           </div>
 
           <div className="space-y-2">
-            <Label>Fecha</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP", { locale: es }) : "Seleccionar fecha"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-              </PopoverContent>
-            </Popover>
+            <Label htmlFor="fecha">Fecha</Label>
+            <Input
+              id="fecha"
+              type="date"
+              value={formData.fecha}
+              onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+              min={new Date().toISOString().split("T")[0]}
+              required
+            />
           </div>
 
           <div className="space-y-2">

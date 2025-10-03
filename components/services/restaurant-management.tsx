@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import { Users, MapPin, Clock, ChefHat, Plus, Calendar, DollarSign } from "lucide-react"
 import { EditMenuDialog } from "./edit-menu-dialog"
+import { RestaurantReservationDialog } from "./restaurant-reservation-dialog"
 
 const restaurantData = {
   mesas: [
@@ -68,6 +69,8 @@ const restaurantData = {
 export function RestaurantManagement() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showEditMenuDialog, setShowEditMenuDialog] = useState(false)
+  const [showReservationDialog, setShowReservationDialog] = useState(false)
+  const [selectedTable, setSelectedTable] = useState<number | undefined>(undefined)
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -102,7 +105,13 @@ export function RestaurantManagement() {
           <h2 className="text-2xl font-bold text-foreground">Gestión de Restaurante</h2>
           <p className="text-muted-foreground">Administra mesas, reservas y menú del día</p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button
+          className="w-full sm:w-auto"
+          onClick={() => {
+            setSelectedTable(undefined)
+            setShowReservationDialog(true)
+          }}
+        >
           <Plus className="h-4 w-4 mr-2" />
           Nueva Reserva
         </Button>
@@ -153,7 +162,15 @@ export function RestaurantManagement() {
                       )}
 
                       <div className="flex gap-2 mt-4">
-                        <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 bg-transparent"
+                          onClick={() => {
+                            setSelectedTable(mesa.numero)
+                            setShowReservationDialog(true)
+                          }}
+                        >
                           <Calendar className="h-4 w-4 mr-1" />
                           Reservar
                         </Button>
@@ -233,6 +250,15 @@ export function RestaurantManagement() {
         open={showEditMenuDialog}
         onOpenChange={setShowEditMenuDialog}
         menuData={restaurantData.menuDelDia}
+      />
+      <RestaurantReservationDialog
+        open={showReservationDialog}
+        onOpenChange={setShowReservationDialog}
+        preselectedTable={selectedTable}
+        onSubmit={(reservation) => {
+          console.log("Nueva reserva:", reservation)
+          // Aquí se podría agregar la lógica para guardar la reserva
+        }}
       />
     </div>
   )

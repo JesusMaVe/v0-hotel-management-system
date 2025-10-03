@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Users, DollarSign, Calendar, Wifi, Projector, Volume2, Snowflake, Plus, Search, Clock } from "lucide-react"
+import { NewEventDialog } from "./new-event-dialog"
+import { BookEventDialog } from "./book-event-dialog"
+import { EventDetailsDialog } from "./event-details-dialog"
 
 const eventData = {
   salones: [
@@ -48,6 +51,10 @@ const eventData = {
 
 export function EventsManagement() {
   const [selectedDate, setSelectedDate] = useState("2025-09-25")
+  const [showNewEventDialog, setShowNewEventDialog] = useState(false)
+  const [showBookEventDialog, setShowBookEventDialog] = useState(false)
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false)
+  const [selectedSalon, setSelectedSalon] = useState<(typeof eventData.salones)[0] | undefined>(undefined)
 
   const getEquipmentIcon = (equipment: string) => {
     switch (equipment) {
@@ -93,7 +100,7 @@ export function EventsManagement() {
           <h2 className="text-2xl font-bold text-foreground">Gestión de Eventos</h2>
           <p className="text-muted-foreground">Administra salones, equipamiento y reservas de eventos</p>
         </div>
-        <Button className="w-full sm:w-auto">
+        <Button className="w-full sm:w-auto" onClick={() => setShowNewEventDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Nuevo Evento
         </Button>
@@ -180,11 +187,27 @@ export function EventsManagement() {
                 </div>
 
                 <div className="flex gap-2 pt-2">
-                  <Button size="sm" className="flex-1" disabled={availability.status === "no_disponible"}>
+                  <Button
+                    size="sm"
+                    className="flex-1"
+                    disabled={availability.status === "no_disponible"}
+                    onClick={() => {
+                      setSelectedSalon(salon)
+                      setShowBookEventDialog(true)
+                    }}
+                  >
                     <Calendar className="h-4 w-4 mr-1" />
                     Reservar
                   </Button>
-                  <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 bg-transparent"
+                    onClick={() => {
+                      setSelectedSalon(salon)
+                      setShowDetailsDialog(true)
+                    }}
+                  >
                     Ver Detalles
                   </Button>
                 </div>
@@ -193,6 +216,34 @@ export function EventsManagement() {
           )
         })}
       </div>
+
+      <NewEventDialog
+        open={showNewEventDialog}
+        onOpenChange={setShowNewEventDialog}
+        onSubmit={(event) => {
+          console.log("Nuevo evento:", event)
+          // Aquí se podría agregar la lógica para guardar el evento
+        }}
+      />
+
+      <BookEventDialog
+        open={showBookEventDialog}
+        onOpenChange={setShowBookEventDialog}
+        selectedSalon={selectedSalon}
+        onSubmit={(reservation) => {
+          console.log("Nueva reserva:", reservation)
+          // Aquí se podría agregar la lógica para guardar la reserva
+        }}
+      />
+
+      <EventDetailsDialog
+        open={showDetailsDialog}
+        onOpenChange={setShowDetailsDialog}
+        salon={selectedSalon}
+        onBookNow={() => {
+          setShowBookEventDialog(true)
+        }}
+      />
     </div>
   )
 }
