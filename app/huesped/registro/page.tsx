@@ -60,6 +60,18 @@ export default function SignUpPage() {
             />
           </div>
           <div className="space-y-2">
+            <Label className="text-sm" htmlFor="email">
+              Número telefónico
+            </Label>
+            <Input
+              className="text-xs"
+              id="email"
+              type="tel"
+              placeholder="+52 449 8090"
+              required
+            />
+          </div>
+          <div className="space-y-2">
             <Label className="text-sm" htmlFor="password">
               Contraseña
             </Label>

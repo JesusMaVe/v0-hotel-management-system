@@ -7,9 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Minus, Plus, ArrowRight, Calendar, Users } from "lucide-react";
+import { Minus, Plus, ArrowRight, Calendar, Users, UserCheck } from "lucide-react";
 import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { ConfirmationDialog } from "./dialogs/confirmation-dialog";
 
 export function BookingForm() {
   const [searchByPoints, setSearchByPoints] = useState(false);
@@ -19,6 +20,7 @@ export function BookingForm() {
   const [childrenCount, setChildrenCount] = useState(0);
   const [seniorsCount, setSeniorsCount] = useState(0);
   const [roomType, setRoomType] = useState("");
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
   const handleRoomType = (value: string) => {
     setRoomType(value)
@@ -43,6 +45,43 @@ export function BookingForm() {
           Seleccione las fechas y el número de personas que se hospedarán en
           Villamagna Family Resorts Aguascalientes
         </p>
+
+        <Card className="bg-hotel-surface-elevated border-0 shadow-md">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <UserCheck className="w-5 h-5 text-hotel-accent" />
+              <Label className="text-sm font-medium text-muted-foreground">
+                Tus datos
+              </Label>
+            </div>
+
+            <div className="flex gap-2 mb-4">
+              <Label className="text-xs text-muted-foreground">
+                Nombre:{" "}
+              </Label>
+              <span className="text-xs font-medium">Elias Cardona</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="space-y-2">
+                <Label className="block mb-2 text-xs text-muted-foreground">
+                  Correo electrónico
+                </Label>
+                <Label className="text-xs font-medium">
+                  elias2347@gmail.com
+                </Label>
+              </div>
+              <div className="space-y-2">
+                <Label className="block mb-2 text-xs text-muted-foreground">
+                  Número telefónico
+                </Label>
+                <Label className="text-xs font-medium">
+                  +52 492 105 4240
+                </Label>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="bg-hotel-surface-elevated border-0 shadow-md">
           <CardContent className="p-6">
@@ -90,7 +129,7 @@ export function BookingForm() {
             <div className="grid gap-4 mb-4">
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">
-                  Elija el tipo de habitación 
+                  Elija el tipo de habitación
                 </Label>
                 <Select onValueChange={handleRoomType}>
                   <SelectTrigger className="w-[180px]">
@@ -184,6 +223,11 @@ export function BookingForm() {
       <ReservationButton
         label="Reservar"
         disabled={false}
+        handleClick={() => setOpenConfirmation(true)}
+      />
+      <ConfirmationDialog
+        open={openConfirmation}
+        onOpenChange={setOpenConfirmation}
       />
     </div>
   );
@@ -237,10 +281,12 @@ function GuestCountInput({
 
 function ReservationButton({
   label,
-  disabled
+  disabled,
+  handleClick
 }: {
   label: string
   disabled: boolean
+  handleClick: () => void
 }) {
   return (
     <div className="fixed z-50 bottom-[5.5rem] justify-self-center">
@@ -249,6 +295,7 @@ function ReservationButton({
         variant="default"
         disabled={disabled}
         className="w-[300px] text-lg px-8 py-4 bg-secondary"
+        onClick={handleClick}
       >
         {label}
         <ArrowRight className="size-6" />
