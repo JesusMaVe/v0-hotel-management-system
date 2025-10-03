@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/header"
 import { GuestProfile } from "@/components/guests/guest-profile"
 import { RecommendationEngine } from "@/components/ai/recommendation-engine"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useToast } from "@/hooks/use-toast"
 
 // Mock data
 const mockGuest = {
@@ -103,14 +104,26 @@ const mockRecommendations = [
 
 export default function GuestsPage() {
   const [recommendations, setRecommendations] = useState(mockRecommendations)
+  const { toast } = useToast()
 
   const handleApplyRecommendation = (id: string) => {
+    const recommendation = recommendations.find((r) => r.id === id)
     console.log("Aplicando recomendación:", id)
+    toast({
+      title: "Recomendación aplicada",
+      description: `${recommendation?.title} - Se ha aplicado exitosamente`,
+    })
     // TODO: Implement recommendation application logic
   }
 
   const handleDismissRecommendation = (id: string) => {
+    const recommendation = recommendations.find((r) => r.id === id)
     setRecommendations((prev) => prev.filter((r) => r.id !== id))
+    toast({
+      title: "Recomendación descartada",
+      description: `${recommendation?.title} - Se ha removido de la lista`,
+      variant: "destructive",
+    })
   }
 
   return (

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Download, FileText, DollarSign, TrendingUp, PieChart, Target } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface FinancialData {
   period: string
@@ -77,6 +78,7 @@ const mockFinancialData: FinancialData[] = [
 export function FinancialReports() {
   const [selectedPeriod, setSelectedPeriod] = useState("Septiembre 2025")
   const [reportType, setReportType] = useState("summary")
+  const { toast } = useToast()
 
   const currentData = mockFinancialData.find((d) => d.period === selectedPeriod) || mockFinancialData[0]
   const previousData = mockFinancialData[1]
@@ -90,6 +92,10 @@ export function FinancialReports() {
 
   const exportReport = (format: string) => {
     console.log(`Exportando reporte en formato ${format}`)
+    toast({
+      title: "Reporte exportado",
+      description: `Se ha generado el reporte en formato ${format.toUpperCase()} - ${selectedPeriod}`,
+    })
     // TODO: Implement actual export functionality
   }
 

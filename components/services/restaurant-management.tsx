@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Users, MapPin, Clock, ChefHat, Plus, Calendar, DollarSign } from "lucide-react"
 import { EditMenuDialog } from "./edit-menu-dialog"
 import { RestaurantReservationDialog } from "./restaurant-reservation-dialog"
+import { EditTableDialog } from "./edit-table-dialog"
 
 const restaurantData = {
   mesas: [
@@ -70,7 +71,9 @@ export function RestaurantManagement() {
   const [searchTerm, setSearchTerm] = useState("")
   const [showEditMenuDialog, setShowEditMenuDialog] = useState(false)
   const [showReservationDialog, setShowReservationDialog] = useState(false)
+  const [showEditTableDialog, setShowEditTableDialog] = useState(false)
   const [selectedTable, setSelectedTable] = useState<number | undefined>(undefined)
+  const [selectedTableData, setSelectedTableData] = useState<(typeof restaurantData.mesas)[0] | undefined>(undefined)
 
   const getStatusColor = (estado: string) => {
     switch (estado) {
@@ -174,7 +177,14 @@ export function RestaurantManagement() {
                           <Calendar className="h-4 w-4 mr-1" />
                           Reservar
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedTableData(mesa)
+                            setShowEditTableDialog(true)
+                          }}
+                        >
                           Editar
                         </Button>
                       </div>
@@ -258,6 +268,15 @@ export function RestaurantManagement() {
         onSubmit={(reservation) => {
           console.log("Nueva reserva:", reservation)
           // Aquí se podría agregar la lógica para guardar la reserva
+        }}
+      />
+      <EditTableDialog
+        open={showEditTableDialog}
+        onOpenChange={setShowEditTableDialog}
+        table={selectedTableData}
+        onSubmit={(tableData) => {
+          console.log("Mesa actualizada:", tableData)
+          // Aquí se podría agregar la lógica para actualizar la mesa
         }}
       />
     </div>

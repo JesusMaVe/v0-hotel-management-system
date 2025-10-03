@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Search, Clock, Sparkles, Utensils, Calendar, ConciergeBell } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { CatalogServiceRequestDialog } from "./catalog-service-request-dialog"
 
 interface ServiceCatalogDialogProps {
   open: boolean
@@ -43,6 +45,9 @@ const allServices = {
 export function ServiceCatalogDialog({ open, onOpenChange }: ServiceCatalogDialogProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [activeTab, setActiveTab] = useState("all")
+  const [showRequestDialog, setShowRequestDialog] = useState(false)
+  const [selectedService, setSelectedService] = useState<any>(null)
+  const [selectedServiceType, setSelectedServiceType] = useState<string>("")
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -77,7 +82,7 @@ export function ServiceCatalogDialog({ open, onOpenChange }: ServiceCatalogDialo
           </div>
           <Badge variant="secondary">${service.precio}</Badge>
         </div>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
           {service.duracion && (
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
@@ -93,6 +98,17 @@ export function ServiceCatalogDialog({ open, onOpenChange }: ServiceCatalogDialo
             {service.categoria}
           </Badge>
         </div>
+        <Button
+          size="sm"
+          className="w-full"
+          onClick={() => {
+            setSelectedService(service)
+            setSelectedServiceType(type)
+            setShowRequestDialog(true)
+          }}
+        >
+          Solicitar
+        </Button>
       </CardContent>
     </Card>
   )
@@ -191,6 +207,13 @@ export function ServiceCatalogDialog({ open, onOpenChange }: ServiceCatalogDialo
             </TabsContent>
           </Tabs>
         </div>
+
+        <CatalogServiceRequestDialog
+          open={showRequestDialog}
+          onOpenChange={setShowRequestDialog}
+          service={selectedService}
+          serviceType={selectedServiceType}
+        />
       </DialogContent>
     </Dialog>
   )

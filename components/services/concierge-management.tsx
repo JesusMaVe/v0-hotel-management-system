@@ -11,18 +11,14 @@ import {
   Car,
   Utensils,
   Waves,
-  Printer,
-  Fan as Fax,
-  Monitor,
-  Users,
-  Clock,
-  DollarSign,
   Plus,
   Search,
   Phone,
   Mail,
+  Clock,
 } from "lucide-react"
 import { NewConciergeRequestDialog } from "./new-concierge-request-dialog"
+import { useToast } from "@/hooks/use-toast"
 
 const conciergeData = {
   serviciosVarios: {
@@ -32,15 +28,6 @@ const conciergeData = {
       "Reservas en restaurantes externos",
       "Actividades acuáticas",
     ],
-    businessCenter: {
-      servicios: ["Impresiones", "Fax", "Computadoras", "Sala de juntas"],
-      horarios: "24/7",
-      tarifas: {
-        impresionBN: 5,
-        impresionColor: 15,
-        salaJuntas: 500,
-      },
-    },
   },
 }
 
@@ -78,6 +65,7 @@ const solicitudesRecientes = [
 ]
 
 export function ConciergeManagement() {
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState("solicitudes")
   const [showNewRequestDialog, setShowNewRequestDialog] = useState(false)
 
@@ -102,27 +90,12 @@ export function ConciergeManagement() {
     }
   }
 
-  const getBusinessIcon = (servicio: string) => {
-    switch (servicio) {
-      case "Impresiones":
-        return <Printer className="h-4 w-4" />
-      case "Fax":
-        return <Fax className="h-4 w-4" />
-      case "Computadoras":
-        return <Monitor className="h-4 w-4" />
-      case "Sala de juntas":
-        return <Users className="h-4 w-4" />
-      default:
-        return <Monitor className="h-4 w-4" />
-    }
-  }
-
   return (
     <div className="space-y-6 px-2.5">
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-foreground">Gestión de Concierge</h2>
-          <p className="text-muted-foreground">Administra servicios de concierge y business center</p>
+          <p className="text-muted-foreground">Administra servicios de concierge para huéspedes</p>
         </div>
         <Button className="w-full sm:w-auto" onClick={() => setShowNewRequestDialog(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -137,13 +110,6 @@ export function ConciergeManagement() {
           className="rounded-b-none"
         >
           Solicitudes de Concierge
-        </Button>
-        <Button
-          variant={activeTab === "business" ? "default" : "ghost"}
-          onClick={() => setActiveTab("business")}
-          className="rounded-b-none"
-        >
-          Business Center
         </Button>
         <Button
           variant={activeTab === "servicios" ? "default" : "ghost"}
@@ -198,11 +164,30 @@ export function ConciergeManagement() {
                   )}
 
                   <div className="flex gap-2 pt-2">
-                    <Button size="sm" className="flex-1">
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        toast({
+                          title: "Llamada iniciada",
+                          description: `Contactando a ${solicitud.huesped} - Habitación ${solicitud.habitacion}`,
+                        })
+                      }}
+                    >
                       <Phone className="h-4 w-4 mr-1" />
                       Contactar
                     </Button>
-                    <Button size="sm" variant="outline" className="flex-1 bg-transparent">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 bg-transparent"
+                      onClick={() => {
+                        toast({
+                          title: "Email enviado",
+                          description: `Email enviado a ${solicitud.huesped.toLowerCase().replace(" ", ".")}@hotel.com`,
+                        })
+                      }}
+                    >
                       <Mail className="h-4 w-4 mr-1" />
                       Email
                     </Button>
@@ -214,87 +199,24 @@ export function ConciergeManagement() {
         </div>
       )}
 
-      {activeTab === "business" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Monitor className="h-5 w-5" />
-                Servicios Disponibles
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {conciergeData.serviciosVarios.businessCenter.servicios.map((servicio, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    {getBusinessIcon(servicio)}
-                    <span className="font-medium">{servicio}</span>
-                  </div>
-                  <Badge variant="outline">Disponible</Badge>
-                </div>
-              ))}
-
-              <div className="pt-4 border-t">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium">Horarios: {conciergeData.serviciosVarios.businessCenter.horarios}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                Tarifas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Printer className="h-4 w-4 text-muted-foreground" />
-                    <span>Impresión B/N</span>
-                  </div>
-                  <span className="font-medium">
-                    ${conciergeData.serviciosVarios.businessCenter.tarifas.impresionBN}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Printer className="h-4 w-4 text-muted-foreground" />
-                    <span>Impresión Color</span>
-                  </div>
-                  <span className="font-medium">
-                    ${conciergeData.serviciosVarios.businessCenter.tarifas.impresionColor}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Users className="h-4 w-4 text-muted-foreground" />
-                    <span>Sala de Juntas (por hora)</span>
-                  </div>
-                  <span className="font-medium">
-                    ${conciergeData.serviciosVarios.businessCenter.tarifas.salaJuntas}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
       {activeTab === "servicios" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {conciergeData.serviciosVarios.concierge.map((servicio, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer">
+            <Card key={index} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6 text-center">
                 <div className="flex justify-center mb-4">{getServiceIcon(servicio)}</div>
                 <h3 className="font-medium text-sm">{servicio}</h3>
-                <Button size="sm" className="mt-4 w-full">
+                <Button
+                  size="sm"
+                  className="mt-4 w-full"
+                  onClick={() => {
+                    setShowNewRequestDialog(true)
+                    toast({
+                      title: "Abriendo formulario",
+                      description: `Solicitud para: ${servicio}`,
+                    })
+                  }}
+                >
                   Solicitar
                 </Button>
               </CardContent>

@@ -7,7 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
-import { Calculator, TrendingUp, TrendingDown, DollarSign, Target, Zap } from "lucide-react"
+import { Calculator, TrendingUp, TrendingDown, DollarSign, Target, Zap, Calendar as CalendarIcon, Clock } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast"
 
 interface PricingScenario {
   roomType: string
@@ -20,6 +22,10 @@ interface PricingScenario {
 }
 
 export function PricingSimulator() {
+  const { toast } = useToast()
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false)
+  const [scheduleDate, setScheduleDate] = useState("")
+  const [scheduleTime, setScheduleTime] = useState("")
   const [scenarios, setScenarios] = useState<PricingScenario[]>([
     {
       roomType: "Standard",
@@ -187,10 +193,20 @@ export function PricingSimulator() {
             <span className="text-sm text-muted-foreground">Cambios se aplicarán automáticamente en 15 minutos</span>
           </div>
           <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setShowScheduleDialog(true)}>
               Programar Cambio
             </Button>
-            <Button size="sm">Aplicar Ahora</Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                toast({
+                  title: "Cambio de precio aplicado",
+                  description: `Precio de ${currentScenario.roomType} actualizado a $${customPrice}. El cambio es efectivo inmediatamente.`,
+                })
+              }}
+            >
+              Aplicar Ahora
+            </Button>
           </div>
         </div>
       </Card>
@@ -219,6 +235,80 @@ export function PricingSimulator() {
           </div>
         </div>
       </Card>
+
+      {/* Schedule Dialog */}
+      <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Programar Cambio de Precio</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6 mt-4">
+            <div className="p-4 bg-accent/10 border border-accent/20 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Habitación:</span>
+                <span className="font-semibold">{currentScenario.roomType}</span>
+              </div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Precio Actual:</span>
+                <span className="font-semibold">${currentScenario.currentPrice}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Nuevo Precio:</span>
+                <span className="font-semibold text-accent">${customPrice}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="schedule-date">Fecha de aplicación *</Label>
+              <Input
+                id="schedule-date"
+                type="date"
+                value={scheduleDate}
+                onChange={(e) => setScheduleDate(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="schedule-time">Hora de aplicación *</Label>
+              <div className="relative">
+                <Clock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="schedule-time"
+                  type="time"
+                  value={scheduleTime}
+                  onChange={(e) => setScheduleTime(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowScheduleDialog(false)}>
+                Cancelar
+              </Button>
+              <Button
+                onClick={() => {
+                  if (scheduleDate && scheduleTime) {
+                    toast({
+                      title: "Cambio programado exitosamente",
+                      description: `El precio de ${currentScenario.roomType} cambiará a $${customPrice} el ${scheduleDate} a las ${scheduleTime}`,
+                    })
+                    setShowScheduleDialog(false)
+                    setScheduleDate("")
+                    setScheduleTime("")
+                  }
+                }}
+                disabled={!scheduleDate || !scheduleTime}
+              >
+                <CalendarIcon className="h-4 w-4 mr-2" />
+                Programar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

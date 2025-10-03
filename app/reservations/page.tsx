@@ -156,22 +156,36 @@ export default function ReservationsPage() {
   }
 
   const handleCheckIn = (id: string) => {
+    const reservation = reservations.find((r) => r.id === id)
     setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, status: "checked-in" as const } : res)))
     setFilteredReservations((prev) =>
       prev.map((res) => (res.id === id ? { ...res, status: "checked-in" as const } : res)),
     )
+    toast({
+      title: "Check-in completado",
+      description: `${reservation?.guestName} - Habitación ${reservation?.roomNumber || "Asignada"}`,
+    })
   }
 
   const handleCheckOut = (id: string) => {
+    const reservation = reservations.find((r) => r.id === id)
     setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, status: "checked-out" as const } : res)))
     setFilteredReservations((prev) =>
       prev.map((res) => (res.id === id ? { ...res, status: "checked-out" as const } : res)),
     )
+    toast({
+      title: "Check-out completado",
+      description: `${reservation?.guestName} - Total: $${reservation?.totalAmount.toLocaleString()}`,
+    })
   }
 
   const handleNewReservation = (newReservation: any) => {
     setReservations((prev) => [newReservation, ...prev])
     setFilteredReservations((prev) => [newReservation, ...prev])
+    toast({
+      title: "Reservación creada exitosamente",
+      description: `${newReservation.guestName} - ${newReservation.roomType}`,
+    })
   }
 
   const handleBulkCheckIn = (ids: string[]) => {
@@ -181,6 +195,10 @@ export default function ReservationsPage() {
     setFilteredReservations((prev) =>
       prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-in" as const } : res)),
     )
+    toast({
+      title: "Check-in masivo completado",
+      description: `${ids.length} reservaciones procesadas exitosamente`,
+    })
   }
 
   const handleBulkCheckOut = (ids: string[]) => {
@@ -190,6 +208,10 @@ export default function ReservationsPage() {
     setFilteredReservations((prev) =>
       prev.map((res) => (ids.includes(res.id) ? { ...res, status: "checked-out" as const } : res)),
     )
+    toast({
+      title: "Check-out masivo completado",
+      description: `${ids.length} reservaciones procesadas exitosamente`,
+    })
   }
 
   const handleEdit = (id: string) => {
@@ -203,6 +225,10 @@ export default function ReservationsPage() {
   const handleUpdateReservation = (id: string, updatedData: any) => {
     setReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
     setFilteredReservations((prev) => prev.map((res) => (res.id === id ? { ...res, ...updatedData } : res)))
+    toast({
+      title: "Reservación actualizada",
+      description: `Los cambios se guardaron exitosamente`,
+    })
   }
 
   return (

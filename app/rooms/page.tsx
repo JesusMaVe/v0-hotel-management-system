@@ -150,7 +150,13 @@ export default function RoomsPage() {
   const { toast } = useToast()
 
   const handleTaskUpdate = (taskId: string, status: string) => {
+    const task = housekeepingTasks.find((t) => t.id === taskId)
     setHousekeepingTasks((prev) => prev.map((task) => (task.id === taskId ? { ...task, status: status as any } : task)))
+    const statusText = status === "completed" ? "completada" : status === "in-progress" ? "en progreso" : "pendiente"
+    toast({
+      title: `Tarea ${statusText}`,
+      description: `Habitación ${task?.roomNumber} - ${task?.type}`,
+    })
   }
 
   const handleAssignRoom = (roomId: string) => {
